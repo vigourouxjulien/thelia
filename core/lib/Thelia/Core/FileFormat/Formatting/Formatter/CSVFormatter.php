@@ -153,8 +153,12 @@ class CSVFormatter extends AbstractFormatter
      */
     public function decode($rawData)
     {
-        $rawData = str_replace("\r" . $this->lineReturn, $this->lineReturn, $rawData);
-        $rawData = str_replace("\r", $this->lineReturn, $rawData);
+        /*
+         * Replace all carriage returns and new lines for a new line
+         * Replace all carriage returns and new lines at end of string for nothing
+         */
+        $rawData = preg_replace(array('#([\r\n]+)#','#([\r\n]+$)#'), array($this->lineReturn,""), $rawData);
+
         $raw = explode($this->lineReturn, $rawData);
 
         $result = array();
