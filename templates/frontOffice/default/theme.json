@@ -1,0 +1,21 @@
+{
+  "name" : "default",
+  "screens" : [
+    {"src" : "screens/screen.jpg", "caption" : "<p>blabla balbalablablabal balbal bal</p>"},
+    {"src" : "screens/screen2.jpg", "caption" : "<p>blabla balbalablablabal balbal bal</p>"},
+    {"src" : "screens/screen3.jpg", "caption" : "<p>blabla balbalablablabal balbal bal</p>"}
+  ],
+  "description" : "Une description du theme default",
+  "keyword" : "mot1, mot2, mot3",
+  "version" : "1.0",
+  "author" : "julien",
+  "authorurl" : "openstudio.fr",
+  "authoremail" : "jvigouroux@openstudio.fr",
+  "theme-url" : "download-url.fr",
+  "require": {
+    "plugin": [
+      {"name" : "Colissimo", "version" : ">0.9", "pluginurl" : "download-url.fr"},
+      {"name" : "Cheque", "version" : "1.1", "pluginurl" : "download-url.fr"}
+    ]
+  }
+}

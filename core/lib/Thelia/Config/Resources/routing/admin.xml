@@ -565,6 +565,20 @@
         <requirement key="conditionIndex">\d+</requirement>
     </route>
 
+    <!-- Routes to the Theme controller -->
+    <route id="admin.theme" path="/admin/themes">
+        <default key="_controller">Thelia\Controller\Admin\ThemeController::indexAction</default>
+    </route>
+    <route id="admin.theme.activate" path="/admin/themes/toggle-activation">
+        <default key="_controller">Thelia\Controller\Admin\ThemeController::toggleActivation</default>
+    </route>
+    <route id="admin.theme.add" path="/admin/themes/add">
+        <default key="_controller">Thelia\Controller\Admin\ThemeController::addTheme</default>
+    </route>
+    <route id="admin.theme.delete" path="/admin/themes/delete">
+        <default key="_controller">Thelia\Controller\Admin\ThemeController::deleteTheme</default>
+    </route>
+
     <!-- Routes to the Config (system variables) controller -->
 
     <route id="admin.configuration.index" path="/admin/configuration">

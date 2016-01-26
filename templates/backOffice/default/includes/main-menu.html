@@ -252,6 +252,37 @@
         {/elsehook}
     {/loop}
 
+    {loop name="menu-auth-theme" type="auth" role="ADMIN" resource="admin.configuration"  access="VIEW"}
+        {ifhook rel="main.top-menu-theme"}
+            {hookblock name="main.top-menu-theme" fields="id,class,url,title"}
+                <li class="{if $admin_current_location == 'theme'}active{/if}" id="theme_menu">
+                    <a title="{intl l="Theme"}" href="#collapse-theme" {if $admin_current_location == 'theme'}class="open"{/if}>
+                    <span class="icon-configuration"></span>
+                    <span class="item-text">{intl l="Theme"}<span class="caret"></span></span>
+                    </a>
+
+                    <ul id="collapse-theme" class="collapse {if $admin_current_location == 'theme'}in{/if}" role="menu">
+                        {forhook rel="main.top-menu-theme"}
+                        <li role="menuitem">
+                            <a {if $id}id="{$id}" {/if} class="{$class}" data-target="{$url}" href="{$url}">
+                            {$title}
+                            </a>
+                        </li>
+                        {/forhook}
+                    </ul>
+                </li>
+            {/hookblock}
+        {/ifhook}
+        {elsehook rel="main.top-menu-theme"}
+            <li class="{if $admin_current_location == 'theme'}active{/if}" id="theme_menu">
+                <a title="{intl l="Theme"}" href="{url path='/admin/themes'}">
+                <span class="icon-configuration"></span>
+                <span class="item-text">{intl l="Theme"}</span>
+                </a>
+            </li>
+        {/elsehook}
+    {/loop}
+
     {loop name="menu-auth-config" type="auth" role="ADMIN" resource="admin.configuration"  access="VIEW"}
         {ifhook rel="main.top-menu-configuration"}
             {hookblock name="main.top-menu-configuration" fields="id,class,url,title"}

@@ -156,6 +156,9 @@
         <form name="thelia_api_create" class="Thelia\Form\Api\ApiCreateForm"/>
         <form name="thelia_api_update" class="Thelia\Form\Api\ApiUpdateForm"/>
 
+        <!-- forms for template -->
+        <form name="thelia.admin.theme.front.add" class="Thelia\Form\ThemeFrontCreationForm"/>
+
     </forms>
 
 </config>

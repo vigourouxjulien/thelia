@@ -68,6 +68,9 @@
         <loop class="Thelia\Core\Template\Loop\ModuleConfig" name="module-config"/>
         <loop class="Thelia\Core\Template\Loop\ProductSaleElementsDocument" name="product-sale-elements-document" />
         <loop class="Thelia\Core\Template\Loop\ProductSaleElementsImage" name="product-sale-elements-image" />
+        <loop class="Thelia\Core\Template\Loop\Theme" name="theme" />
+        <loop class="Thelia\Core\Template\Loop\ThemeScreen" name="themescreen" />
+        <loop class="Thelia\Core\Template\Loop\ThemeRequirement" name="themerequirement" />
     </loops>
 
 </config>
