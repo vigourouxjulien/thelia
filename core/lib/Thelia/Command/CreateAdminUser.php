@@ -16,9 +16,11 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Thelia\Model\Admin;
 use Thelia\Model\AdminQuery;
+use Thelia\Model\LangQuery;
 
 class CreateAdminUser extends ContainerAwareCommand
 {
@@ -86,10 +88,10 @@ class CreateAdminUser extends ContainerAwareCommand
         $admin->save();
 
         $output->writeln(array(
-                "",
-                "<info>User ".$admin->getLogin()." successfully created.</info>",
-                ""
-            ));
+            "",
+            "<info>User ".$admin->getLogin()." successfully created.</info>",
+            ""
+        ));
     }
 
     protected function enterData(
@@ -135,8 +137,7 @@ class CreateAdminUser extends ContainerAwareCommand
         $admin->setLogin($input->getOption("login_name") ?: $this->enterLogin($helper, $input, $output));
         $admin->setFirstname($input->getOption("first_name") ?: $this->enterData($helper, $input, $output, "User first name : ", "Please enter user first name."));
         $admin->setLastname($input->getOption("last_name") ?: $this->enterData($helper, $input, $output, "User last name : ", "Please enter user last name."));
-
-        $admin->setLocale($input->getOption("locale") ?: 'en_US');
+        $admin->setLocale($input->getOption("locale") ?: $this->enterLocal($helper, $input, $output, "User default language (default: English)", "Please enter user default language."));
         $admin->setEmail($input->getOption("email") ?: $this->enterEmail($helper, $input, $output));
 
         do {
@@ -162,6 +163,45 @@ class CreateAdminUser extends ContainerAwareCommand
         return sprintf("<info>%s</info>", $text);
     }
 
+    protected function enterLocal(
+        QuestionHelper $helper,
+        InputInterface $input,
+        OutputInterface $output,
+        $label,
+        $errorMessage,
+        $hidden = false
+    ) {
+
+        $localList = LangQuery::create()->find();
+        $arrayList = $localList->toKeyValue('Id','Title');
+        $AutoCompleterArrayList = $localList->toKeyValue('Id','Locale');
+
+        $question = new ChoiceQuestion(
+            $label,
+            $arrayList,
+            'en_US'
+        );
+
+        $question->setAutocompleterValues($AutoCompleterArrayList);
+
+        if ($hidden) {
+            $question->setHidden(true);
+            $question->setHiddenFallback(false);
+        }
+
+        $question->setValidator(function ($value) use (&$errorMessage,&$AutoCompleterArrayList) {
+            if (trim($value) == '') {
+                throw new \Exception($errorMessage);
+            }
+            if(!array_key_exists(trim($value),$AutoCompleterArrayList)){
+                throw new \Exception($errorMessage.' '.trim($value).' '.serialize($AutoCompleterArrayList));
+            }
+
+            return $AutoCompleterArrayList[trim($value)];
+        });
+
+        return $helper->ask($input, $output, $question);
+    }
 
     protected function enterLogin(QuestionHelper $helper, InputInterface $input, OutputInterface $output)
     {
