@@ -1,0 +1,127 @@
+{extends file="mangopay.tpl"}
+{default_translation_domain domain='paymentmangopay.bo.default'}
+
+{block name="no-return-functions"}
+{$admin_current_location = 'modules'}
+{/block}
+
+{block name="page-title"}Mangopay{/block}
+
+{block name="check-resource"}admin.module{/block}
+{block name="check-access"}view{/block}
+{block name="check-module"}Mangopay{/block}
+
+{block name="main-content"}
+<div id="wrapper" class="container">
+
+    {if $general_error}
+    <div class="alert alert-danger">
+        {$general_error}
+    </div>
+    {/if}
+
+    <div class="general-block-decorator">
+        {include file="includes/mangopay_menu.html" selected_menu="users"}
+
+        <ol class="breadcrumb">
+            <li><a href="{url path='/admin/module/PaymentMangopay/users'}">{intl l='Users list' d='paymentmangopay.bo.default'}</a></li>
+            <li class="active">{intl l='Wallet' d='paymentmangopay.bo.default'}</li>
+        </ol>
+
+        {loop type="mangopayusersloop" name="mangopayusersloop" user=$user_id}
+        <p>Wallet id : {$WALLET}</p>
+        {loop type="walletapiloop" name="walletapiloop" id=$WALLET}
+        <p> - Montant : {$AMOUNT} {$CURRENCY}</p>
+        {/loop}
+        <table class="table table-striped table-condensed">
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Nature</th>
+                <th>Status</th>
+                <th>DebitedFunds</th>
+                <th>CreditedFunds</th>
+                <th>Fees</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+            {loop type="transactionapiloop" name="transactionapiloop" wallet=$WALLET}
+            {$associd = $ID}
+            {if $NATURE eq "REFUND"}
+                {loop type="refundapiloop" name="refundapiloop" transaction=$ID}
+                    {$associd = $INITIALTRANSACTIONID}
+                {/loop}
+            {/if}
+            <tr class="trhover" data-id="{$associd}">
+                <td><span class="togglelabel label label-default" >{$ID}</span></td>
+                <td>{$TYPE}</td>
+                <td>{$NATURE}</td>
+                <td><span class="label
+                    {if $STATUS eq 'FAILED'}
+                        label-danger
+                    {elseif $STATUS eq 'SUCCEEDED'}
+                        label-success
+                    {/if}
+                    ">
+                    {$STATUS}
+                    </span>
+                </td>
+                <td>{$DEBITEDFUNDS_AMOUNT} {$DEBITEDFUNDS_CURRENCY}</td>
+                <td>{$CREDITEDFUNDS_AMOUNT} {$CREDITEDFUNDS_CURRENCY}</td>
+                <td>{$FEES_AMOUNT} {$FEES_CURRENCY}</td>
+                <td>{$CREATIONDATE}</td>
+                <td>
+                    <div class="btn-group">
+                        {loop name="auth-edit" type="auth" role="ADMIN" resource="admin.module" access="UPDATE" module="PaymentMangopay"}
+                            {if $NATURE ne "REFUND" && $STATUS eq "SUCCEEDED"}
+                            <a class="btn btn-default btn-xs mangopay-confirmation-action"
+                                data-modaltitle="{intl l='Refund' d='paymentmangopay.bo.default'}"
+                                data-modaldesc="{intl l='Refund this payment ?' d='paymentmangopay.bo.default'}"
+                                href="{url path="/admin/module/PaymentMangopay/user/$user_id/refund/$ID"}">
+                                <i class="glyphicon glyphicon-edit"></i> refund
+                            </a>
+                            {/if}
+                        {/loop}
+
+                        {if $NATURE eq "REFUND"}
+                            {loop type="refundapiloop" name="refundapiloop" transaction=$ID}
+                            <span class="togglelabel label label-default">{$INITIALTRANSACTIONID}</span>
+                            {/loop}
+                        {/if}
+
+                    </div>
+                </td>
+            </tr>
+            {/loop}
+
+        </table>
+        {/loop}
+    </div>
+</div>
+
+<div class="modal fade" id="myAjaxModal" tabindex="-1" role="dialog" aria-labelledby="myAjaxModal" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{/block}
+
+{block name="javascript-last-call"}
+<script>
+
+    $('.trhover').hover(
+        function(){
+            var dataid = $(this).data('id');
+            $('[data-id="'+dataid+'"]').toggleClass('warning');
+        },
+        function(){
+            var dataid = $(this).data('id');
+            $('[data-id="'+dataid+'"]').toggleClass('warning');
+        }
+    );
+
+</script>
+{/block}
+

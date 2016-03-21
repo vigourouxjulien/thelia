@@ -1,0 +1,244 @@
+{loop type="mangopaylegalusersloop" name="mangopaylegalusersloop" id={$user_id}}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">{intl l='Edit user' d='paymentmangopay.bo.default'}</h4>
+</div>
+
+{form name="legaluser.mangopay.edition"}
+
+<form action="{url path="/admin/module/PaymentMangopay/user/$ID/legaluser-edit"}" method="post" role="form">
+<div class="modal-body">
+
+    {form_hidden_fields form=$form}
+
+    {render_form_field form=$form field="success_url" value={url path="/admin/module/PaymentMangopay/user/$ID/legaluser-edit"}}
+
+    {form_field form=$form field='id' }
+    <input type="hidden" name="{$name}" value="{$ID}" />
+    {/form_field}
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            {form_field form=$form field='Tag' }
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" readonly="readonly" name="{$name}" class="form-control" value="{$TAG}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='Email'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$EMAIL}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='Name'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$NAME}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalPersonType'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr} >
+                    <option value="BUSINESS" {if $LEGALPERSONTYPE eq "BUSINESS"} selected="selected" {/if}>BUSINESS</option>
+                    <option value="ORGANIZATION" {if $LEGALPERSONTYPE eq "ORGANIZATION"} selected="selected" {/if}>ORGANIZATION</option>
+                </select>
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressAddressLine1'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$AQADDRESSLINE1}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressAddressLine2'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$AQADDRESSLINE2}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressCity'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$AQCITY}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressRegion'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$AQREGION}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressPostalCode'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$AQPOSTALCODE}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='HeadquartersAddressCountry'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $AQCOUNTRY != ""}
+                            {if $AQCOUNTRY == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+        </div>
+
+        <div class="col-md-6">
+
+            {form_field form=$form field='LegalRepresentativeFirstName'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LEGALREPRESENTATIVEFIRSTNAME}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeLastName'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LEGALREPRESENTATIVELASTNAME}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressAddressLine1'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LRADDRESSLINE1}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressAddressLine2'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LRADDRESSLINE2}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressCity'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LRCITY}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressRegion'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LRREGION}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressPostalCode'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LRPOSTALCODE}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeAddressCountry'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $LRCOUNTRY != ""}
+                            {if $LRCOUNTRY == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeEmail'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LEGALREPRESENTATIVEEMAIL}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeBirthday'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LEGALREPRESENTATIVEBIRTHDAY}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeNationality'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $LEGALREPRESENTATIVENATIONALITY != ""}
+                            {if $LEGALREPRESENTATIVENATIONALITY == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='LegalRepresentativeCountryOfResidence'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $LEGALREPRESENTATIVECOUNTRYOFRESIDENCE != ""}
+                            {if $LEGALREPRESENTATIVECOUNTRYOFRESIDENCE == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">{intl d='paymentmangopay.bo.default' l='Close'}</button>
+    <button type="submit" class="btn btn-info">{intl d='paymentmangopay.bo.default' l='Save'}</button>
+</div>
+
+</form>
+{/form}
+
+{/loop}

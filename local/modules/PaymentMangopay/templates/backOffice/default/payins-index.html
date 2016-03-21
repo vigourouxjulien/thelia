@@ -1,0 +1,76 @@
+{extends file="mangopay.tpl"}
+{default_translation_domain domain='paymentmangopay.bo.default'}
+
+{block name="no-return-functions"}
+{$admin_current_location = 'modules'}
+{/block}
+
+{block name="page-title"}Mangopay{/block}
+
+{block name="check-resource"}admin.module{/block}
+{block name="check-access"}view{/block}
+{block name="check-module"}Mangopay{/block}
+
+{block name="main-content"}
+<div id="wrapper" class="container">
+
+    {if $general_error}
+    <div class="alert alert-danger">
+        {$general_error}
+    </div>
+    {/if}
+
+    <div class="general-block-decorator">
+        {include file="includes/mangopay_menu.html" selected_menu="payins"}
+
+        <ol class="breadcrumb">
+            <li class="active">{intl l='Payins list' d='paymentmangopay.bo.default'}</li>
+        </ol>
+        <h1>{intl d='paymentmangopay.bo.default' l='Preauthorization list'}</h1>
+
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>#</th>
+                <th>Montant</th>
+                <th>Authorization status</th>
+                <th>Payment Status</th>
+                <th>Payin</th>
+            </tr>
+            {loop type="preauthorizationloop" name="preauthorizationloop"}
+            {$orderid = $ORDER_ID}
+            <tr>
+                <td>{$PREAUTHORIZATION}</td>
+                {loop type="preauthorizationdetailloop" name="preauthorizationdetailloop" id="$PREAUTHORIZATION"}
+                    <td>{$AMOUNT} {$CURRENCY}</td>
+                    <td>{$STATUS}</td>
+                    <td>
+                        <span class="label
+                        {if $PAYMENTSTATUS eq 'WAITING'}
+                            label-warning
+                        {elseif $PAYMENTSTATUS eq 'VALIDATED'}
+                            label-success
+                        {elseif $PAYMENTSTATUS eq 'CANCELED' || $PAYMENTSTATUS eq 'EXPIRED' }
+                            label-danger
+                        {/if}
+                        ">
+                        {$PAYMENTSTATUS}
+                        </span>
+
+                    </td>
+                    <td>
+                        {if $PAYMENTSTATUS eq 'WAITING'}
+                        <a href="{url path="admin/module/PaymentMangopay/preauthorization/$PREAUTHORIZATION/order/$ORDER_ID/view"}" class="mangopay-ajax-action">Payin</a>
+                        {/if}
+                    </td>
+                {/loop}
+            </tr>
+
+            {/loop}
+        </table>
+
+
+    </div>
+</div>
+
+{/block}
+

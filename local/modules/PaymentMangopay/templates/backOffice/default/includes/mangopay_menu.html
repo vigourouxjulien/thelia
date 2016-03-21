@@ -1,0 +1,5 @@
+<ul class="nav nav-tabs" id="tabbed-menu">
+    <li class="{if $selected_menu == "configuration"}active{/if}"><a href="{url path='admin/module/PaymentMangopay'}" >{intl d='paymentmangopay.bo.default' l='Configuration'}</a></li>
+    <li class="{if $selected_menu == "users"}active{/if}"><a href="{url path='admin/module/PaymentMangopay/users'}" >{intl d='paymentmangopay.bo.default' l='Users'}</a></li>
+    <li class="{if $selected_menu == "payins"}active{/if}"><a href="{url path='admin/module/PaymentMangopay/payins'}" >{intl d='paymentmangopay.bo.default' l='Deferred payement'}</a></li>
+</ul>

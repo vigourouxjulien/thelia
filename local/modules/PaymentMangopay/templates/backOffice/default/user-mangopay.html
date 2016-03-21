@@ -1,0 +1,56 @@
+{extends file="mangopay.tpl"}
+{default_translation_domain domain='mangopay'}
+
+{block name="no-return-functions"}
+{$admin_current_location = 'modules'}
+{/block}
+
+{block name="page-title"}Mangopay USER{/block}
+
+{block name="check-resource"}admin.module{/block}
+{block name="check-access"}view{/block}
+{block name="check-module"}Mangopay{/block}
+
+{block name="main-content"}
+<div id="wrapper" class="container">
+
+    {if $general_error}
+    <div class="alert alert-danger">
+        {$general_error}
+    </div>
+    {/if}
+
+    <!-- LadsCaisse list -->
+    <div class="general-block-decorator">
+
+        <h1>Info Api</h1>
+        {loop type="paymentmangopayapiloop" name="paymentmangopayapiloop"}
+        <ul>
+            <li>{$CLIENT_ID}</li>
+            <li>{$CLIENT_PASSWORD}</li>
+            <li>{$TEMPORARY_FOLDER}</li>
+        </ul>
+        {/loop}
+
+        <h1>Users List</h1>
+        <table class="table table-striped table-hover table-condensed">
+            <tr>
+                <th>#</th>
+                <th>type</th>
+                <th>email</th>
+                <th></th>
+            </tr>
+            {loop type="mangopayapiusersloop" name="mangopayapiusersloop"}
+            <tr>
+                <td>{$ID}</td>
+                <td>{$PERSON_TYPE}</td>
+                <td>{$EMAIL}</td>
+                <td><a href="{url path="/admin/module/PaymentMangopay/user/$ID"}">Choisir</a></td>
+            </tr>
+            {/loop}
+        </table>
+    </div>
+</div>
+
+
+{/block}

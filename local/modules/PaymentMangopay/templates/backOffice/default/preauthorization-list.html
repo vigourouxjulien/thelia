@@ -1,0 +1,109 @@
+{extends file="admin-layout.tpl"}
+{default_translation_domain domain='paymentmangopay'}
+
+{block name="no-return-functions"}
+{$admin_current_location = 'modules'}
+{/block}
+
+{block name="page-title"}Mangopay{/block}
+
+{block name="check-resource"}admin.module{/block}
+{block name="check-access"}view{/block}
+{block name="check-module"}Mangopay{/block}
+
+{block name="main-content"}
+<div id="wrapper" class="container">
+
+    {if $general_error}
+    <div class="alert alert-danger">
+        {$general_error}
+    </div>
+    {/if}
+    <div class="general-block-decorator">
+        <div class="row">
+
+            <div class="col-md-12 title title-without-tabs">
+                {intl d='paymentmangopay.bo.default' l='Preauthorization list'}
+            </div>
+
+            <div class="form-container">
+                <div class="col-md-12">
+
+                    {loop type="preauthorizationloop" name="preauthorizationloop"}
+                    <div class="bg-info">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h1>Preauth {$PREAUTHORIZATION}</h1>
+                                <p>Order id : {$ORDER_ID}</p>
+                                <p>Preauthorization : {$PREAUTHORIZATION}</p>
+                                <p>Status : {$STATUS}</p>
+                                {if $STATUS eq "WAITING"}
+                                    <p><a href="{url path="admin/module/PaymentMangopay/preauthorization/$PREAUTHORIZATION/order/$ORDER_ID/payin"}">PayIn</a> </p>
+                                {/if}
+                            </div>
+                            <div class="col-lg-3">
+                                <h2>Preauth detail</h2>
+                                {$mypayinid = 0}
+                                {loop type="preauthorizationdetailloop" name="preauthorizationdetailloop" id="$PREAUTHORIZATION"}
+                                <ul>
+                                    <li>AMOUNT : {$AMOUNT}</li>
+                                    <li>CURRENCY : {$CURRENCY}</li>
+                                    <li>CARDID : {$CARDID}</li>
+                                    <li>ID : {$ID}</li>
+                                    <li>STATUS : {$STATUS}</li>
+                                    <li>PAYMENTSTATUS : {$PAYMENTSTATUS}</li>
+                                    <li>PAYINID : {$PAYINID}</li>
+                                    {$mypayinid = $PAYINID}
+                                </ul>
+                                {/loop}
+                            </div>
+                            <div class="col-lg-3">
+                                <h2>Amount / fees</h2>
+                                {if $mypayinid ne 0}
+                                    {loop type="payindetailloop" name="payindetailloop" id=$mypayinid}
+                                    <ul>
+                                        <li>ID : {$ID}</li>
+                                        <li>STATUS : {$STATUS}</li>
+                                        <li>CREDITEDFUNDSAMOUNT : {$CREDITEDFUNDSAMOUNT}</li>
+                                        <li>CREDITEDFUNDSCURRENCY : {$CREDITEDFUNDSCURRENCY}</li>
+                                        <li>DEBITEDFUNDSAMOUNT : {$DEBITEDFUNDSAMOUNT}</li>
+                                        <li>DEBITEDFUNDSCURRENCY : {$DEBITEDFUNDSCURRENCY}</li>
+                                        <li>FEESAMOUNT : {$FEESAMOUNT}</li>
+                                        <li>FEESCURRENCY : {$FEESCURRENCY}</li>
+                                    </ul>
+                                    {/loop}
+                                {/if}
+                            </div>
+                            <div class="col-lg-3">
+                                <h2>Order detail</h2>
+                                <form action="{url path="admin/module/PaymentMangopay/preauthorization/$PREAUTHORIZATION/order/$ORDER_ID/payin"}" method="post">
+                                    {loop type="order" name="order" backend_context="on" id=$ORDER_ID}
+                                        <p>$TOTAL_AMOUNT => {$TOTAL_AMOUNT}</p>
+                                        <p>$TOTAL_TAXED_AMOUNT => {$TOTAL_TAXED_AMOUNT}</p>
+                                        <h3>Product list</h3>
+                                        {loop type="order_product" name="order_product" backend_context="on" order=$ID}
+                                            <p>{$ID} | {$REF} | {$PRICE} delete ? => <input type="checkbox" name="orderproduct[]" value="{$ID}"></p>
+                                        {/loop}
+                                        <p><button type="submit">PayIn</button> </p>
+                                    {/loop}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    {/loop}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{/block}
+
+
+
+

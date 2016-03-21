@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <!--
+
+    if a /admin/module/paymentmangopay/ route is provided, a "Configuration" button will be displayed
+    for the module in the module list. Clicking this button will invoke this route.
+
+    <route id="my_route_id" path="/admin/module/paymentmangopay">
+        <default key="_controller">PaymentMangopay\Full\Class\Name\Of\YourConfigurationController::methodName</default>
+    </route>
+
+    <route id="my_route_id" path="/admin/module/paymentmangopay/route-name">
+        <default key="_controller">PaymentMangopay\Full\Class\Name\Of\YourAdminController::methodName</default>
+    </route>
+
+    <route id="my_route_id" path="/my/route/name">
+        <default key="_controller">PaymentMangopay\Full\Class\Name\Of\YourOtherController::methodName</default>
+    </route>
+
+    ...add as many routes as required.
+
+    <route>
+    ...
+    </route>
+    -->
+    <!-- ADMIN ROUTE -->
+    <route id="paymentmangopay.configuration" path="/admin/module/PaymentMangopay" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::defaultAction</default>
+    </route>
+    <route id="paymentmangopay.users" path="/admin/module/PaymentMangopay/users" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::usersList</default>
+    </route>
+    <!-- natural user -->
+        <route id="paymentmangopay.naturaluseradd" path="/admin/module/PaymentMangopay/naturaluser/add" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\NaturalUserController::naturalUserCreate</default>
+        </route>
+        <route id="paymentmangopay.naturaluseredit" path="/admin/module/PaymentMangopay/user/{user_id}/naturaluser-edit" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\NaturalUserController::naturalUserEdition</default>
+            <requirement key="user_id">\d+</requirement>
+        </route>
+        <route id="paymentmangopay.naturaluserseditmodal" path="/admin/module/PaymentMangopay/user/{user_id}/naturaluser-edit-modal" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\NaturalUserController::naturalUserEditModal</default>
+            <requirement key="user_id">\d+</requirement>
+        </route>
+    <!-- legal user -->
+        <route id="paymentmangopay.legaluseradd" path="/admin/module/PaymentMangopay/legaluser/add" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\LegalUserController::legalUserCreate</default>
+        </route>
+        <route id="paymentmangopay.legaluseredit" path="/admin/module/PaymentMangopay/user/{user_id}/legaluser-edit" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\LegalUserController::legalUserEdition</default>
+            <requirement key="user_id">\d+</requirement>
+        </route>
+        <route id="paymentmangopay.legaluserseditmodal" path="/admin/module/PaymentMangopay/user/{user_id}/legaluser-edit-modal" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\LegalUserController::legalUserEditModal</default>
+            <requirement key="user_id">\d+</requirement>
+        </route>
+
+    <!-- wallet -->
+        <route id="paymentmangopay.viewwallet" path="/admin/module/PaymentMangopay/user/{user_id}/view-wallet" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\WalletController::userViewWallet</default>
+            <requirement key="user_id">\d+</requirement>
+        </route>
+        <route id="paymentmangopay.refundtransaction" path="/admin/module/PaymentMangopay/user/{user_id}/refund/{transaction_id}" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\WalletController::refundTransaction</default>
+            <requirement key="user_id">\d+</requirement>
+            <requirement key="transaction_id">\d+</requirement>
+        </route>
+
+    <!-- payins -->
+        <route id="paymentmangopay.payins" path="/admin/module/PaymentMangopay/payins" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::payinsList</default>
+        </route>
+        <route id="paymentmangopay.preauthorizationview" path="/admin/module/PaymentMangopay/preauthorization/{preauthorization_id}/order/{order_id}/view" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\PreauthorizationController::preauthorizationView</default>
+            <requirement key="preauthorization_id">\d+</requirement>
+            <requirement key="order_id">\d+</requirement>
+        </route>
+        <route id="paymentmangopay.preauthorizationpayin" path="/admin/module/PaymentMangopay/preauthorization/{preauthorization_id}/order/{order_id}/payin" >
+            <default key="_controller">PaymentMangopay\Controller\Admin\PreauthorizationController::preauthorizationPayIn</default>
+            <requirement key="preauthorization_id">\d+</requirement>
+            <requirement key="order_id">\d+</requirement>
+        </route>
+
+    <route id="paymentmangopay.configurationupdate" path="/admin/module/PaymentMangopay/configuration/update" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::configurationUpdate</default>
+    </route>
+    <route id="paymentmangopay.user" path="/admin/module/PaymentMangopay/user/{user_id}" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::user</default>
+        <requirement key="user_id">\d+</requirement>
+    </route>
+    <route id="paymentmangopay.preauthorization" path="/admin/module/PaymentMangopay/preauthorization" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::preauthorizationList</default>
+    </route>
+
+
+
+    <!-- FRONT ROUTE -->
+    <route id="paymentmangopay.confirmation" path="/mangopay/{order_id}" >
+        <default key="_controller">PaymentMangopay\Controller\Front\FrontController::placedAction</default>
+        <requirement key="order_id">\d+</requirement>
+    </route>
+    <route id="paymentmangopay.fillcard" path="/mangopay/{order_id}/fillcard" >
+        <default key="_controller">PaymentMangopay\Controller\Front\FrontController::fillCard</default>
+        <requirement key="order_id">\d+</requirement>
+    </route>
+    <route id="paymentmangopay.registercard" path="/mangopay/{order_id}/registercard" >
+        <default key="_controller">PaymentMangopay\Controller\Front\FrontController::registerCard</default>
+        <requirement key="order_id">\d+</requirement>
+    </route>
+    <route id="paymentmangopay.registercardsuccess" path="/mangopay/{order_id}/registercardsuccess" >
+        <default key="_controller">PaymentMangopay\Controller\Front\FrontController::registerCardSuccess</default>
+        <requirement key="order_id">\d+</requirement>
+    </route>
+</routes>

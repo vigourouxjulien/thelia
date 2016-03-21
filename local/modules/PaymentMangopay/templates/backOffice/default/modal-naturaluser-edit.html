@@ -1,0 +1,155 @@
+{loop type="mangopaynaturalusersloop" name="mangopaynaturalusersloop" id={$user_id}}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">{intl l='Edit user' d='paymentmangopay.bo.default'}</h4>
+</div>
+
+{form name="naturaluser.mangopay.edition"}
+
+<form action="{url path="/admin/module/PaymentMangopay/user/$ID/naturaluser-edit"}" method="post" role="form">
+<div class="modal-body">
+
+    {form_hidden_fields form=$form}
+
+    {render_form_field form=$form field="success_url" value={url path="/admin/module/PaymentMangopay/user/$ID/naturaluser-edit"}}
+    <div class="row">
+        <div class="col-md-6">
+            {form_field form=$form field='id' }
+            <input type="hidden" name="{$name}" value="{$ID}" />
+            {/form_field}
+
+            {form_field form=$form field='tag' }
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$TAG}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='email' }
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$EMAIL}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='firstname'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$FIRST_NAME}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='lastname'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$LAST_NAME}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='birthday'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$BIRTHDAY}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='nationality'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $NATIONALITY != ""}
+                            {if $NATIONALITY == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+
+            {form_field form=$form field='countryofresidence'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $COUNTRYOFRESIDENCE != ""}
+                            {if $COUNTRYOFRESIDENCE == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+        </div>
+        <div class="col-md-6">
+            {form_field form=$form field='addressline1'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$ADDRESSLINE1}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+            {form_field form=$form field='addressline2'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$ADDRESSLINE2}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+            {form_field form=$form field='city'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$CITY}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+            {form_field form=$form field='region'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$REGION}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+            {form_field form=$form field='postalcode'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <input type="text" id="{$label_attr.for}" required="required" name="{$name}" class="form-control" value="{$POSTALCODE}" title="{$label}" placeholder="{$label}">
+            </div>
+            {/form_field}
+            {form_field form=$form field='country'}
+            <div class="form-group {if $error}has-error{/if}">
+                <label class="control-label">{$label}</label>
+                <select name="{$name}" id="{$label_attr.for}" class="form-control {if $required} required {/if}" {if $required} required {/if} {$attr}>
+                    <option value="">-- {intl l="Select Country"} --</option>
+                    {loop type="country" name="country.list"}
+                    <option value="{$ISOALPHA2}"
+                            {if $COUNTRY != ""}
+                            {if $COUNTRY == $ISOALPHA2}selected{/if}
+                    {else}
+                    {if $IS_DEFAULT}selected{/if}
+                    {/if}
+
+                    >{$TITLE}</option>
+                    {/loop}
+                </select>
+            </div>
+            {/form_field}
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">{intl d='paymentmangopay.bo.default' l='Close'}</button>
+    <button type="submit" class="btn btn-info">{intl d='paymentmangopay.bo.default' l='Save'}</button>
+</div>
+
+</form>
+{/form}
+
+{/loop}
