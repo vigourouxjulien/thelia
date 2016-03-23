@@ -6,6 +6,7 @@ return array(
     'Deferred payement' => 'Paiement différé',
 
     // 'an english string' => 'La traduction française de la chaine',
+    'Default Wallet' => 'Wallet par defaut',
     'Users list' => 'Liste des utilisateurs',
     'Wallet' => 'Portefeuille',
     'Close' => 'Fermer',

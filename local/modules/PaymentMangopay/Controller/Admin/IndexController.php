@@ -58,6 +58,58 @@ class IndexController extends BaseAdminController
         $this->setCurrentRouter("router.paymentmangopay");
         return $this->generateRedirectFromRoute("paymentmangopay.configuration");
     }
+    public function escrowWalletUpdate(){
+        $api = PaymentMangopay::getMangoPayApi();
+
+        //Create a natural user
+        $legalUser = new UserLegal();
+
+        $legalUser->Tag = 'Escrow Wallet OPEN STUDIO';   //Auto fill tag with firstname lastname
+        $legalUser->LegalPersonType = 'OPEN STUDIO';
+        $legalUser->Email = 'jvigouroux@openstudio.fr';
+        $legalUser->Name = 'OPEN STUDIO';
+
+        $HeadquartersAddress = new Address();
+        $HeadquartersAddress->AddressLine1 = '12 Avenue Clément Charbonnier';
+        $HeadquartersAddress->City = 'Le Puy-en-Velay';
+        $HeadquartersAddress->PostalCode = '43000';
+        $HeadquartersAddress->Country = 'FR';
+
+        $legalUser->HeadquartersAddress = $HeadquartersAddress;
+
+        $legalUser->LegalRepresentativeFirstName = 'VIGOUROUX';
+        $legalUser->LegalRepresentativeLastName = 'Julien';
+
+        $LegalRepresentativeAddress = new Address();
+        $LegalRepresentativeAddress->AddressLine1 = '12 Avenue Clément Charbonnier';
+        $LegalRepresentativeAddress->City = 'Le Puy-en-Velay';
+        $LegalRepresentativeAddress->PostalCode = '43000';
+        $LegalRepresentativeAddress->Country = 'FR';
+
+        $legalUser->LegalRepresentativeAddress = $LegalRepresentativeAddress;
+
+        $legalUser->LegalRepresentativeEmail = 'jvigouroux@openstudio.fr';
+        $legalUser->LegalRepresentativeBirthday = 121271;
+        $legalUser->LegalRepresentativeNationality = 'FR';
+        $legalUser->LegalRepresentativeCountryOfResidence = 'FR';
+
+        $legalUserResult = $api->Users->Create($legalUser);
+
+        //add a wallet for this user
+        $wallet = new Wallet();
+        $wallet->Owners = array($legalUserResult->Id);
+        $wallet->Description = "Escrow wallet OPEN STUDIO";
+        //TODO : select currency in form
+        $wallet->Currency = "EUR";
+        $myWallet = $api->Wallets->Create($wallet);
+
+        //add information in local database
+        $myUser = new MangopayWallet();
+        $myUser->setUser($legalUserResult->Id)
+            ->setWallet($myWallet->Id)
+            ->save()
+        ;
+    }
     public function user(){
         return $this->render('user-mangopay');
     }

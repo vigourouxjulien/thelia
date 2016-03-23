@@ -32,6 +32,16 @@ class LegalUserMangopayCreationForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
+            ->add("isdefault","text",array(
+                "label" => Translator::getInstance()->trans('Default Wallet',[],PaymentMangopay::BO_DOMAIN_NAME),
+                "label_attr" => [
+                    "for" => "isdefault",
+                    "help" => Translator::getInstance()->trans('Default Wallet',[],PaymentMangopay::BO_DOMAIN_NAME)
+                ],
+                "required" => false,
+                "constraints" => array(),
+                "attr" => array()
+            ))
             ->add("Tag","text",array(
                 "label" => Translator::getInstance()->trans('Tag',[],PaymentMangopay::BO_DOMAIN_NAME),
                 "label_attr" => [
@@ -50,7 +60,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('Email',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -63,7 +73,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('Name',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -76,7 +86,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalPersonType',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array( new Choice(array('choices' => array('BUSINESS','ORGANIZATION')))),
                     "attr" => array()
                 )
@@ -87,7 +97,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('HeadquartersAddressAddressLine1',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -111,7 +121,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('HeadquartersAddressCity',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -135,7 +145,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('HeadquartersAddressPostalCode',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -145,7 +155,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('HeadquartersAddressCountry',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -157,7 +167,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalRepresentativeFirstName',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -169,7 +179,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalRepresentativeLastName',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -180,7 +190,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('LegalRepresentativeAddressAddressLine1',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -204,7 +214,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('LegalRepresentativeAddressCity',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -228,7 +238,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('LegalRepresentativeAddressPostalCode',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -238,7 +248,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('LegalRepresentativeAddressCountry',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -263,7 +273,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalRepresentativeBirthday',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -276,7 +286,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalRepresentativeNationality',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -289,7 +299,7 @@ class LegalUserMangopayCreationForm extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('LegalRepresentativeCountryOfResidence',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )

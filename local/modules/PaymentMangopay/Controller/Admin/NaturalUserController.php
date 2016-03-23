@@ -62,6 +62,7 @@ class NaturalUserController extends BaseAdminController
             $this->setCurrentRouter("router.paymentmangopay");
             return $this->generateRedirectFromRoute("paymentmangopay.users");
 
+
         } catch (ResponseException $e) {
 
             Logs::Debug('MangoPay\ResponseException Code', $e->GetCode());

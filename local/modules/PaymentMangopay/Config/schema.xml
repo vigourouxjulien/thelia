@@ -31,23 +31,42 @@
     <!--
     Lien entre un customer ou autre et un user/wallet dans mangopay
     thelia_seller => référence à une table contenant les vendeurs ou autre
+    is_default => portefeuille tampon pour réaliser les paiements fractionnés
     -->
     <table name="mangopay_wallet" namespace="PaymentMangopay\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="user" required="true" type="INTEGER" />
         <column name="wallet" required="true" type="INTEGER" />
+        <column name="is_default" defaultValue="0" type="INTEGER" />
         <column name="thelia_seller" defaultValue="0" type="INTEGER" />
     </table>
 
     <!--
-    escrowwallet est un portefeuille tampon pour réaliser les paiements fractionnés
+    Chaque transaction réussit sur l'escrow_wallet est dispatché sur plusieurs user_wallet.
     -->
+    <table name="mangopay_order_transfert" namespace="PaymentMangopay\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="transaction_ref" required="true" size="100" type="VARCHAR" />
+        <column name="transaction_status" required="true" size="255" type="VARCHAR" />
+        <column name="escrow_wallet" required="true" type="INTEGER" />
+        <column name="user_wallet" required="true" type="INTEGER" />
+        <column name="transfert_ref" required="true" type="INTEGER" />
+        <column name="transfert_status" required="true" size="255" type="VARCHAR" />
+        <index name="idx_order_transfert">
+          <index-column name="transaction_ref" />
+        </index>
+        <behavior name="timestampable" />
+    </table>
+
+    <!--
+    escrowwallet est un portefeuille tampon pour réaliser les paiements fractionnés
+
     <table name="mangopay_escrowwallet" namespace="PaymentMangopay\Model">
         <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
         <column name="user" required="true" type="INTEGER" />
         <column name="wallet" required="true" type="INTEGER" />
     </table>
-
+    -->
 
 
     <!--

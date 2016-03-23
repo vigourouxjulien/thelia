@@ -88,6 +88,10 @@
     <route id="paymentmangopay.configurationupdate" path="/admin/module/PaymentMangopay/configuration/update" >
         <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::configurationUpdate</default>
     </route>
+    <route id="paymentmangopay.escrowwalletupdate" path="/admin/module/PaymentMangopay/escrowwallet/update" >
+        <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::escrowWalletUpdate</default>
+    </route>
+
     <route id="paymentmangopay.user" path="/admin/module/PaymentMangopay/user/{user_id}" >
         <default key="_controller">PaymentMangopay\Controller\Admin\IndexController::user</default>
         <requirement key="user_id">\d+</requirement>

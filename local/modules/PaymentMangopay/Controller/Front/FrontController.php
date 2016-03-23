@@ -12,6 +12,8 @@
 
 namespace PaymentMangopay\Controller\Front;
 
+use PaymentMangopay\Event\MangopayDispatchPaymentEvent;
+use PaymentMangopay\Event\PaymentMangopayEvents;
 use PaymentMangopay\Model\OrderPreauthorisation;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\Event\Order\OrderEvent;
@@ -58,7 +60,8 @@ class FrontController extends BaseFrontController
             $cardRegisterPut->RegistrationData = isset($_GET['data']) ? 'data=' . $_GET['data'] : 'errorCode=' . $_GET['errorCode'];
             $cardRegisterPut->RegistrationData = isset($data) ? 'data=' . $data : 'errorCode=' . $errorCode;
             $result = $api->CardRegistrations->Update($cardRegisterPut);
-
+            var_dump($cardRegisterPut);
+            var_dump($result);
             //if($cardRegisterPut->Status === 'VALIDATED'){
             if($result->Status === 'VALIDATED'){
 
@@ -70,10 +73,14 @@ class FrontController extends BaseFrontController
                     array('order_id'=>$order_id)
                 );
 
+                //Currency
+                $order = OrderQuery::create()->findPk($order_id);
+                $currency = $order->getCurrency()->getCode();
+
                 $CardPreAuthorization = new \MangoPay\CardPreAuthorization();
                 $CardPreAuthorization->AuthorId = $user;
                 $CardPreAuthorization->DebitedFunds = new \MangoPay\Money();
-                $CardPreAuthorization->DebitedFunds->Currency = "EUR";
+                $CardPreAuthorization->DebitedFunds->Currency = $currency;
                 $CardPreAuthorization->DebitedFunds->Amount = $amount;
                 $CardPreAuthorization->SecureMode = "DEFAULT";
                 //$CardPreAuthorization->CardId = $cardRegisterPut->CardId;
@@ -82,7 +89,7 @@ class FrontController extends BaseFrontController
                 $CardPreAuthorization->SecureModeReturnURL = $SecureModeReturnURL;
 
                 $cardPreAuth = $api->CardPreAuthorizations->Create($CardPreAuthorization);
-
+                var_dump($cardPreAuth);
                 //if($cardPreAuth->PaymentStatus === 'WAITING' && $cardPreAuth->Status === 'SUCCEEDED'){
 
                     //Le paiement est autorisé et en attente
@@ -156,6 +163,26 @@ class FrontController extends BaseFrontController
                     $event = new OrderEvent($order);
                     $event->setStatus(OrderStatusQuery::create()->findOneByCode(OrderStatus::CODE_PAID)->getId());
                     $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS,$event);
+
+                    $mangopay = new PaymentMangopay();
+
+                    if ($event->getOrder()->isPaid() && $mangopay->isPaymentModuleFor($event->getOrder())) {
+
+                        //Total ttc ?
+                        $myOrder = $event->getOrder();
+
+                        $transactionRef = $myOrder->getTransactionRef();
+                        $currency = $myOrder->getCurrency()->getCode();
+                        $dispatchPaymentEvent = new MangopayDispatchPaymentEvent($myOrder);
+
+                        $this->dispatch(PaymentMangopayEvents::PAYMENT_MANGOPAY_DISPATCH,$dispatchPaymentEvent);
+                        $tabTransfer = $dispatchPaymentEvent->getTabDispatch();
+                        if(is_array($tabTransfer)){
+                            foreach($tabTransfer as $aTransfer){
+                                PaymentMangopay::doTransfer($transactionRef,$aTransfer['amount'],$order->getRef(),$aTransfer['user'],$aTransfer['wallet'],$currency);
+                            }
+                        }
+                    }
 
                     //$order->setStatusId(OrderStatusQuery::getPaidStatus()->getId())->save();
                     return $this->generateRedirectFromRoute(

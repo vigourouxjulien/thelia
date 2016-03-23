@@ -1,7 +1,7 @@
 <?php
 namespace PaymentMangopay\Loop;
 
-use PaymentMangopay\Model\MangopayWalletQuery;
+use PaymentMangopay\Model\MangopayEscrowwalletQuery;
 use PaymentMangopay\Model\OrderPreauthorisationQuery;
 use PaymentMangopay\PaymentMangopay;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -12,35 +12,19 @@ use Thelia\Core\Template\Element\ArraySearchLoopInterface;
 use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 
-class MangopayUsersLoop extends BaseLoop implements ArraySearchLoopInterface
+class EscrowWalletLoop extends BaseLoop implements ArraySearchLoopInterface
 {
 
     protected function getArgDefinitions()
     {
         return new ArgumentCollection(
-            Argument::createIntTypeArgument('id', 0),
-            Argument::createIntTypeArgument('wallet', 0),
-            Argument::createIntTypeArgument('user', 0),
-            Argument::createIntTypeArgument('isdefault', 0)
         );
     }
     public function buildArray()
     {
 
-        $search = MangopayWalletQuery::create();
+        $search = MangopayEscrowwalletQuery::create();
 
-        if($this->getId()!=0){
-            $search->filterById($this->getId());
-        }
-        if($this->getWallet()!=0){
-            $search->filterByWallet($this->getWallet());
-        }
-        if($this->getUser()!=0){
-            $search->filterByUser($this->getUser());
-        }
-        if($this->getIsdefault()!=0) {
-            $search->filterByIsDefault($this->getIsdefault());
-        }
         $search->find();
 
 		$items = array();
@@ -61,9 +45,9 @@ class MangopayUsersLoop extends BaseLoop implements ArraySearchLoopInterface
 			$loopResultRow = new LoopResultRow();
 
 			$loopResultRow
-				->set("ID", $item->getId())
-				->set("WALLET", $item->getWallet())
+                ->set("ID", $item->getId())
 				->set("USER", $item->getUser())
+				->set("WALLET", $item->getWallet())
 				;
 
 			$loopResult->addRow($loopResultRow);

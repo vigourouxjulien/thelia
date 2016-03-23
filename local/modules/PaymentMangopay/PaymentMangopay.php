@@ -12,17 +12,24 @@
 
 namespace PaymentMangopay;
 
+use MangoPay\Money;
+use MangoPay\Transfer;
 use PaymentMangopay\Model\Base\MangopayConfigurationQuery;
 use PaymentMangopay\Model\MangopayConfiguration;
+use PaymentMangopay\Model\MangopayEscrowwallet;
+use PaymentMangopay\Model\MangopayOrderTransfert;
+use PaymentMangopay\Model\MangopayWalletQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Thelia\Core\HttpFoundation\Session\Session;
 use Thelia\Install\Database;
 
 use Thelia\Core\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
+use Thelia\Log\Tlog;
 use Thelia\Module\BaseModule;
 use Thelia\Module\PaymentModuleInterface;
 use Thelia\Model\Order;
+use Thelia\Model\Lang;
 use Thelia\Core\HttpFoundation\Request;
 use Thelia\Module\AbstractPaymentModule;
 use Thelia\Tools\URL;
@@ -35,6 +42,11 @@ use MangoPay\Libraries\ResponseException;
 use MangoPay\Libraries\Exception;
 use MangoPay\Libraries\Logs;
 
+
+use Thelia\Core\Template\ParserInterface;
+use Thelia\Core\Template\TemplateHelperInterface;
+
+
 class PaymentMangopay extends AbstractPaymentModule
 {
     /** @var string */
@@ -42,10 +54,25 @@ class PaymentMangopay extends AbstractPaymentModule
     const BO_DOMAIN_NAME = 'paymentmangopay.bo.default';
 
     static function getTestUser(){
-        return 11463819;
+        //return 11463819;
+        $configValues = MangopayWalletQuery::create()->filterByIsDefault(1)->findOne();
+        return $configValues->getUser();
     }
     static function getTestWallet(){
-        return 11463820;
+        //return 11463820;
+        $configValues = MangopayWalletQuery::create()->filterByIsDefault(1)->findOne();
+        return $configValues->getWallet();
+    }
+
+    static function getEscrowUser(){
+        //return 11463819;
+        $configValues = MangopayWalletQuery::create()->filterByIsDefault(1)->findOne();
+        return $configValues->getUser();
+    }
+    static function getEscrowWallet(){
+        //return 11463820;
+        $configValues = MangopayWalletQuery::create()->filterByIsDefault(1)->findOne();
+        return $configValues->getWallet();
     }
 
     static function getFees(){
@@ -55,6 +82,86 @@ class PaymentMangopay extends AbstractPaymentModule
     static function getDeferredPay(){
         $configValues = MangopayConfigurationQuery::create()->findPk(1);
         return $configValues->getDeferredPayment();
+    }
+    /*
+     * Return an array for split the payment
+     * @params Order $order
+     * @return array
+     */
+    /*
+    static function getTabTransfer(Order $order){
+
+        $amout = $order->getTotalAmount();
+        $transferDebitedAmount = $amout / 2;
+
+        $tabReturn = array();
+        $tabReturn[] = array(
+            'amount' => $transferDebitedAmount,
+            'user' => 11460979,
+            'wallet' =>11460981
+        );
+        $tabReturn[] = array(
+            'amount' => $transferDebitedAmount,
+            'user' => 11463819,
+            'wallet' =>11463820
+        );
+
+        return $tabReturn;
+    }
+    */
+    /*
+     * Do a transfer from escrow wallet to user wallet for dispatch payment
+     */
+    static function doTransfer($transactionRef,$transferDebitedAmount,$orderRef,$creditedUserId,$creditedWalletId,$currency){
+
+        $api = PaymentMangopay::getMangoPayApi();
+
+        $escrowUser = PaymentMangopay::getEscrowUser();
+        $escrowWallet = PaymentMangopay::getEscrowWallet();
+
+        //DebitedFunds – Fees = CreditedFunds (amount received on wallet)
+        $feesTx = PaymentMangopay::getFees();
+
+        //Amount in cents
+        $transferDebitedAmount = $transferDebitedAmount * 100;
+
+        $transferFeesAmount = $transferDebitedAmount * ($feesTx/100);
+        $transferCreditedAmount = $transferDebitedAmount - $transferFeesAmount;
+
+        $transfer = new Transfer();
+        $transfer->Tag = 'Tranfer for order '.$orderRef;
+        $transfer->AuthorId = $escrowUser;
+        $transfer->CreditedUserId = $creditedUserId;
+        $transfer->DebitedWalletId = $escrowWallet;
+        $transfer->CreditedWalletId = $creditedWalletId;
+
+        $debitedFunds = new Money();
+        $debitedFunds->Amount = $transferDebitedAmount;
+        $debitedFunds->Currency = $currency;
+
+        $fees = new Money();
+        $fees->Amount = $transferFeesAmount;
+        $fees->Currency = $currency;
+
+        $creditedFunds = new Money();
+        $creditedFunds->Amount = $transferCreditedAmount;
+        $creditedFunds->Currency = $currency;
+
+        $transfer->DebitedFunds = $debitedFunds;
+        $transfer->Fees = $fees;
+        $transfer->CreditedFunds = $creditedFunds;
+
+        $myTransfer = $api->Transfers->Create($transfer);
+
+        $dbTransfer = new MangopayOrderTransfert();
+        $dbTransfer->setTransactionRef($transactionRef)
+            ->setTransactionStatus('')
+            ->setEscrowWallet($escrowWallet)
+            ->setUserWallet($creditedWalletId)
+            ->setTransfertRef($myTransfer->Id)
+            ->setTransfertStatus($myTransfer->Status)
+            ->save();
+
     }
 
     public function postActivation(ConnectionInterface $con = null)
@@ -82,7 +189,12 @@ class PaymentMangopay extends AbstractPaymentModule
             ->setDeferredPayment(0)
             ->setDays(0)
             ->save();
-
+        /*
+        $escrowwallet = new MangopayEscrowwallet();
+        $escrowwallet->setUser(0)
+            ->setWallet(0)
+            ->save();
+        */
     }
 
     static function getMangoPayApi()
@@ -108,13 +220,6 @@ class PaymentMangopay extends AbstractPaymentModule
     }
     */
 
-    /*
-     * You may now override BaseModuleInterface methods, such as:
-     * install, destroy, preActivation, postActivation, preDeactivation, postDeactivation
-     *
-     * Have fun !
-     */
-
     public function isValidPayment()
     {
         return true;
@@ -123,47 +228,66 @@ class PaymentMangopay extends AbstractPaymentModule
     public function pay(Order $order)
     {
         if(PaymentMangopay::getDeferredPay() == 1){
-            $this->doDeferredPay($order);
+            return $this->doDeferredPay($order);
         }
         else{
-            $this->doDirectPay($order);
+            return $this->doDirectPay($order);
         }
     }
     public function doDirectPay(Order $order)
     {
         try {
 
-            $Amount = $order->getTotalAmount();
-            $Fees = $Amount * 0.1;
+            //Get Amount in cents
+            $Amount = $order->getTotalAmount() * 100;
 
-            $returnUrl = $this->getPaymentSuccessPageUrl($order->getId());
+            //No fees
+            $Fees = 0;
 
-            //Récupération des données du vendeur
-            $user = PaymentMangopay::getTestUser();
-            $wallet = PaymentMangopay::getTestWallet();
+            //The return url
+            $MangopayRouter = $this->getContainer()->get('router.paymentmangopay');
+            $returnUrl = URL::getInstance()->absoluteUrl(
+                $MangopayRouter->generate(
+                    "paymentmangopay.confirmation",
+                    array("order_id" => $order->getId()),
+                    Router::ABSOLUTE_URL
+                )
+            );
+
+            //Récupération des données du compte tampon
+            $escrowUser = PaymentMangopay::getEscrowUser();
+            $escrowWallet = PaymentMangopay::getEscrowWallet();
 
             //Récupératin du type de carte à utiliser
             //CB_VISA_MASTERCARD MAESTRO DINERS P24 IDEAL BCMC MASTERPASS
-            $cardType = "CB_VISA_MASTERCARD";
-
-            //Récupération du langage courrant
             $session = new Session();
-            $defaultLang = $session->getLang()->getLocale();
+            $cardType = $session->get('selectedCardType',null);
+
+            if(!$cardType){
+                $cardType = 'CB_VISA_MASTERCARD';
+            }
+
+            //Récupération du langage courante
+            $session = new Session();
+            $defaultLang = $session->getLang()->getCode();
+
+            //Currency
+            $currency = $order->getCurrency()->getCode();
 
             $executionDate = new \DateTime(date('Y/m/d'));
 
             $api = PaymentMangopay::getMangoPayApi();
             $PayIn = new PayIn();
-            $PayIn->CreditedWalletId = $wallet;
-            $PayIn->AuthorId = $user;
+            $PayIn->CreditedWalletId = $escrowWallet;
+            $PayIn->AuthorId = $escrowUser;
             $PayIn->PaymentType = "CARD";
             $PayIn->PaymentDetails = new PayInPaymentDetailsCard();
             $PayIn->PaymentDetails->CardType = $cardType;
             $PayIn->DebitedFunds = new \MangoPay\Money();
-            $PayIn->DebitedFunds->Currency = "EUR";
+            $PayIn->DebitedFunds->Currency = $currency;
             $PayIn->DebitedFunds->Amount = $Amount;
             $PayIn->Fees = new \MangoPay\Money();
-            $PayIn->Fees->Currency = "EUR";
+            $PayIn->Fees->Currency = $currency;
             $PayIn->Fees->Amount = $Fees;
             $PayIn->ExecutionType = "WEB";
             $PayIn->ExecutionDetails = new PayInExecutionDetailsWeb();
@@ -179,6 +303,7 @@ class PaymentMangopay extends AbstractPaymentModule
             $html_params = array();
 
             return $this->generateGatewayFormResponse($order, $result->ExecutionDetails->RedirectURL, $html_params);
+
         } catch (ResponseException $e) {
 
             Logs::Debug('MangoPay\ResponseException Code', $e->GetCode());
@@ -193,48 +318,35 @@ class PaymentMangopay extends AbstractPaymentModule
     public function doDeferredPay(Order $order)
     {
         try {
-            $Amount = $order->getTotalAmount();
-            $Fees = $Amount * 0.1;
+           //Get Amount in cents
+            $Amount = $order->getTotalAmount() * 100;
+
+            //No fees
+            $Fees = 0;
 
             //Création d'une carte de paiement
             $api = PaymentMangopay::getMangoPayApi();
 
-            $user = PaymentMangopay::getTestUser();
-            $wallet = PaymentMangopay::getTestWallet();
+            //Récupération des données du compte tampon
+            $escrowUser = PaymentMangopay::getEscrowUser();
+            $escrowWallet = PaymentMangopay::getEscrowWallet();
+
+            //Currency
+            $currency = $order->getCurrency()->getCode();
 
             $cardRegister = new \MangoPay\CardRegistration();
-            $cardRegister->UserId = $user;
-            $cardRegister->Currency = "EUR";
+            $cardRegister->UserId = $escrowUser;
+            $cardRegister->Currency = $currency;
+            //CB_VISA_MASTERCARD, MAESTRO, DINERS
+            $cardRegister->CardType = "CB_VISA_MASTERCARD";
             $result = $api->CardRegistrations->Create($cardRegister);
-
-            //$returnUrl = $_SERVER["HTTP_HOST"].'/mangopay/'.$order->getId().'/registercard?CardReg='.$result->Id.'&user='.$user.'&wallet='.$wallet.'&amount='.$Amount;
-            /*
-            $MangopayRouter = $this->getContainer()->get('router.paymentmangopay');
-
-            $returnUrl = URL::getInstance()->absoluteUrl(
-                $MangopayRouter->generate(
-                    "paymentmangopay.fillcard",
-                    array(
-                        "order_id" => $order->getId(),
-                        "data" => $result->PreregistrationData,
-                        "accessKeyRef" => $result->AccessKey,
-                        "returnURL" => $returnUrl
-                    ),
-                    Router::ABSOLUTE_URL
-                )
-            );
-
-            Redirect::exec($returnUrl);
-            */
-            //$parser = $this->getContainer()->get("thelia.parser");
-
-
+            var_dump($result);
             $parser = $this->getContainer()->get("thelia.parser");
 
             $parser->setTemplateDefinition(
                 $parser->getTemplateHelper()->getActiveFrontTemplate()
             );
-            var_dump($result);
+
             $renderedTemplate = $parser->render(
                 "card-register-mangopay.html",
                 array(
@@ -242,79 +354,14 @@ class PaymentMangopay extends AbstractPaymentModule
                     "data" => $result->PreregistrationData,
                     "accessKeyRef" => $result->AccessKey,
                     "CardReg" => $result->Id,
-                    "user" => $user,
-                    "wallet" => $wallet,
+                    "user" => $escrowUser,
+                    "wallet" => $escrowWallet,
                     "amount" => $Amount
-                    //"returnURL" => $returnUrl
                 )
             );
 
             return Response::create($renderedTemplate);
 
-
-            //return $this->generateGatewayFormResponse($order, $result->ExecutionDetails->RedirectURL, $html_params);
-            /*
-            return $this->render(
-                'card-register-mangopay',
-                array(
-                    "order_id" => $order->getId(),
-                    "data" => $result->PreregistrationData,
-                    "accessKeyRef" => $result->AccessKey,
-                    "returnURL" => $returnUrl
-                )
-            );
-            */
-
-
-            /*$returnUrl = $this->retrieveUrlFromRouteId(
-                'order.placed',
-                array('order_id'=>$order->getId()),
-                array()
-            );*/
-            //$this->setCurrentRouter("router.paymentmangopay");
-
-
-            /*
-            $MangopayRouter = $this->getContainer()->get('router.paymentmangopay');
-
-            $returnUrl = URL::getInstance()->absoluteUrl(
-                $MangopayRouter->generate(
-                    "paymentmangopay.confirmation",
-                    array("order_id" => $order->getId()),
-                    Router::ABSOLUTE_URL
-                )
-            );
-            //$returnUrl = $this->getPaymentSuccessPageUrl($order->getId());
-
-            $executionDate = new \DateTime('2016/03/16');
-
-            $api = PaymentMangopay::getMangoPayApi();
-            $PayIn = new PayIn();
-            $PayIn->CreditedWalletId = 11308215;
-            $PayIn->AuthorId = 11308049;
-            $PayIn->PaymentType = "CARD";
-            $PayIn->PaymentDetails = new PayInPaymentDetailsCard();
-            $PayIn->PaymentDetails->CardType = "CB_VISA_MASTERCARD";
-            $PayIn->DebitedFunds = new \MangoPay\Money();
-            $PayIn->DebitedFunds->Currency = "EUR";
-            $PayIn->DebitedFunds->Amount = $Amount;
-            $PayIn->Fees = new \MangoPay\Money();
-            $PayIn->Fees->Currency = "EUR";
-            $PayIn->Fees->Amount = $Fees;
-            $PayIn->ExecutionType = "WEB";
-            $PayIn->ExecutionDetails = new PayInExecutionDetailsWeb();
-            $PayIn->ExecutionDetails->ReturnURL = $returnUrl;
-            $PayIn->ExecutionDetails->Culture = "EN";
-            $PayIn->ExecutionDate = $executionDate->getTimestamp();
-            $result = $api->PayIns->Create($PayIn);
-
-            $transaction_id = $result->Id;
-            $order->setTransactionRef($transaction_id)->save();
-
-            $html_params = array();
-
-            return $this->generateGatewayFormResponse($order, $result->ExecutionDetails->RedirectURL, $html_params);
-            */
         } catch (ResponseException $e) {
 
             Logs::Debug('MangoPay\ResponseException Code', $e->GetCode());
@@ -331,4 +378,5 @@ class PaymentMangopay extends AbstractPaymentModule
     {
         return false;
     }
+
 }

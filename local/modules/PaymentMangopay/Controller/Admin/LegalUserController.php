@@ -75,8 +75,11 @@ class LegalUserController extends BaseAdminController
             $legalUserResult = $api->Users->Update($legalUser);
 
             // Set the module router to use module routes
+            //return $this->generateRedirect($data['success_url']);
+
             $this->setCurrentRouter("router.paymentmangopay");
             return $this->generateRedirectFromRoute("paymentmangopay.users");
+
 
         } catch (ResponseException $e) {
 
@@ -149,12 +152,16 @@ class LegalUserController extends BaseAdminController
             $myUser = new MangopayWallet();
             $myUser->setUser($legalUserResult->Id)
                 ->setWallet($myWallet->Id)
+                ->setIsDefault($data['isdefault'])
                 ->save()
             ;
 
             // Set the module router to use module routes
+            //return $this->generateRedirect($data['success_url']);
+
             $this->setCurrentRouter("router.paymentmangopay");
             return $this->generateRedirectFromRoute("paymentmangopay.users");
+
 
         } catch (ResponseException $e) {
 

@@ -2,10 +2,12 @@
 
 namespace PaymentMangopay\Model\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
-use PaymentMangopay\Model\MangopayWalletQuery as ChildMangopayWalletQuery;
-use PaymentMangopay\Model\Map\MangopayWalletTableMap;
+use PaymentMangopay\Model\MangopayOrderTransfert as ChildMangopayOrderTransfert;
+use PaymentMangopay\Model\MangopayOrderTransfertQuery as ChildMangopayOrderTransfertQuery;
+use PaymentMangopay\Model\Map\MangopayOrderTransfertTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,13 +18,14 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
-abstract class MangopayWallet implements ActiveRecordInterface 
+abstract class MangopayOrderTransfert implements ActiveRecordInterface 
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\PaymentMangopay\\Model\\Map\\MangopayWalletTableMap';
+    const TABLE_MAP = '\\PaymentMangopay\\Model\\Map\\MangopayOrderTransfertTableMap';
 
 
     /**
@@ -58,30 +61,52 @@ abstract class MangopayWallet implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the user field.
-     * @var        int
+     * The value for the transaction_ref field.
+     * @var        string
      */
-    protected $user;
+    protected $transaction_ref;
 
     /**
-     * The value for the wallet field.
-     * @var        int
+     * The value for the transaction_status field.
+     * @var        string
      */
-    protected $wallet;
+    protected $transaction_status;
 
     /**
-     * The value for the is_default field.
-     * Note: this column has a database default value of: 0
+     * The value for the escrow_wallet field.
      * @var        int
      */
-    protected $is_default;
+    protected $escrow_wallet;
 
     /**
-     * The value for the thelia_seller field.
-     * Note: this column has a database default value of: 0
+     * The value for the user_wallet field.
      * @var        int
      */
-    protected $thelia_seller;
+    protected $user_wallet;
+
+    /**
+     * The value for the transfert_ref field.
+     * @var        int
+     */
+    protected $transfert_ref;
+
+    /**
+     * The value for the transfert_status field.
+     * @var        string
+     */
+    protected $transfert_status;
+
+    /**
+     * The value for the created_at field.
+     * @var        string
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     * @var        string
+     */
+    protected $updated_at;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -92,24 +117,10 @@ abstract class MangopayWallet implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
-     */
-    public function applyDefaultValues()
-    {
-        $this->is_default = 0;
-        $this->thelia_seller = 0;
-    }
-
-    /**
-     * Initializes internal state of PaymentMangopay\Model\Base\MangopayWallet object.
-     * @see applyDefaults()
+     * Initializes internal state of PaymentMangopay\Model\Base\MangopayOrderTransfert object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -201,9 +212,9 @@ abstract class MangopayWallet implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>MangopayWallet</code> instance.  If
-     * <code>obj</code> is an instance of <code>MangopayWallet</code>, delegates to
-     * <code>equals(MangopayWallet)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>MangopayOrderTransfert</code> instance.  If
+     * <code>obj</code> is an instance of <code>MangopayOrderTransfert</code>, delegates to
+     * <code>equals(MangopayOrderTransfert)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -286,7 +297,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return MangopayWallet The current object, for fluid interface
+     * @return MangopayOrderTransfert The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -318,7 +329,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return MangopayWallet The current object, for fluid interface
+     * @return MangopayOrderTransfert The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -375,54 +386,116 @@ abstract class MangopayWallet implements ActiveRecordInterface
     }
 
     /**
-     * Get the [user] column value.
+     * Get the [transaction_ref] column value.
      * 
-     * @return   int
+     * @return   string
      */
-    public function getUser()
+    public function getTransactionRef()
     {
 
-        return $this->user;
+        return $this->transaction_ref;
     }
 
     /**
-     * Get the [wallet] column value.
+     * Get the [transaction_status] column value.
      * 
-     * @return   int
+     * @return   string
      */
-    public function getWallet()
+    public function getTransactionStatus()
     {
 
-        return $this->wallet;
+        return $this->transaction_status;
     }
 
     /**
-     * Get the [is_default] column value.
+     * Get the [escrow_wallet] column value.
      * 
      * @return   int
      */
-    public function getIsDefault()
+    public function getEscrowWallet()
     {
 
-        return $this->is_default;
+        return $this->escrow_wallet;
     }
 
     /**
-     * Get the [thelia_seller] column value.
+     * Get the [user_wallet] column value.
      * 
      * @return   int
      */
-    public function getTheliaSeller()
+    public function getUserWallet()
     {
 
-        return $this->thelia_seller;
+        return $this->user_wallet;
+    }
+
+    /**
+     * Get the [transfert_ref] column value.
+     * 
+     * @return   int
+     */
+    public function getTransfertRef()
+    {
+
+        return $this->transfert_ref;
+    }
+
+    /**
+     * Get the [transfert_status] column value.
+     * 
+     * @return   string
+     */
+    public function getTransfertStatus()
+    {
+
+        return $this->transfert_status;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTime ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     * 
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw \DateTime object will be returned.
+     *
+     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTime ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
      * Set the value of [id] column.
      * 
      * @param      int $v new value
-     * @return   \PaymentMangopay\Model\MangopayWallet The current object (for fluent API support)
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -432,7 +505,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[MangopayWalletTableMap::ID] = true;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::ID] = true;
         }
 
 
@@ -440,88 +513,172 @@ abstract class MangopayWallet implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [user] column.
+     * Set the value of [transaction_ref] column.
      * 
-     * @param      int $v new value
-     * @return   \PaymentMangopay\Model\MangopayWallet The current object (for fluent API support)
+     * @param      string $v new value
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
      */
-    public function setUser($v)
+    public function setTransactionRef($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->user !== $v) {
-            $this->user = $v;
-            $this->modifiedColumns[MangopayWalletTableMap::USER] = true;
+        if ($this->transaction_ref !== $v) {
+            $this->transaction_ref = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::TRANSACTION_REF] = true;
         }
 
 
         return $this;
-    } // setUser()
+    } // setTransactionRef()
 
     /**
-     * Set the value of [wallet] column.
+     * Set the value of [transaction_status] column.
      * 
-     * @param      int $v new value
-     * @return   \PaymentMangopay\Model\MangopayWallet The current object (for fluent API support)
+     * @param      string $v new value
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
      */
-    public function setWallet($v)
+    public function setTransactionStatus($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->wallet !== $v) {
-            $this->wallet = $v;
-            $this->modifiedColumns[MangopayWalletTableMap::WALLET] = true;
+        if ($this->transaction_status !== $v) {
+            $this->transaction_status = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::TRANSACTION_STATUS] = true;
         }
 
 
         return $this;
-    } // setWallet()
+    } // setTransactionStatus()
 
     /**
-     * Set the value of [is_default] column.
+     * Set the value of [escrow_wallet] column.
      * 
      * @param      int $v new value
-     * @return   \PaymentMangopay\Model\MangopayWallet The current object (for fluent API support)
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
      */
-    public function setIsDefault($v)
+    public function setEscrowWallet($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->is_default !== $v) {
-            $this->is_default = $v;
-            $this->modifiedColumns[MangopayWalletTableMap::IS_DEFAULT] = true;
+        if ($this->escrow_wallet !== $v) {
+            $this->escrow_wallet = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::ESCROW_WALLET] = true;
         }
 
 
         return $this;
-    } // setIsDefault()
+    } // setEscrowWallet()
 
     /**
-     * Set the value of [thelia_seller] column.
+     * Set the value of [user_wallet] column.
      * 
      * @param      int $v new value
-     * @return   \PaymentMangopay\Model\MangopayWallet The current object (for fluent API support)
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
      */
-    public function setTheliaSeller($v)
+    public function setUserWallet($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->thelia_seller !== $v) {
-            $this->thelia_seller = $v;
-            $this->modifiedColumns[MangopayWalletTableMap::THELIA_SELLER] = true;
+        if ($this->user_wallet !== $v) {
+            $this->user_wallet = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::USER_WALLET] = true;
         }
 
 
         return $this;
-    } // setTheliaSeller()
+    } // setUserWallet()
+
+    /**
+     * Set the value of [transfert_ref] column.
+     * 
+     * @param      int $v new value
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
+     */
+    public function setTransfertRef($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->transfert_ref !== $v) {
+            $this->transfert_ref = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::TRANSFERT_REF] = true;
+        }
+
+
+        return $this;
+    } // setTransfertRef()
+
+    /**
+     * Set the value of [transfert_status] column.
+     * 
+     * @param      string $v new value
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
+     */
+    public function setTransfertStatus($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->transfert_status !== $v) {
+            $this->transfert_status = $v;
+            $this->modifiedColumns[MangopayOrderTransfertTableMap::TRANSFERT_STATUS] = true;
+        }
+
+
+        return $this;
+    } // setTransfertStatus()
+
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[MangopayOrderTransfertTableMap::CREATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * 
+     * @param      mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return   \PaymentMangopay\Model\MangopayOrderTransfert The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[MangopayOrderTransfertTableMap::UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -533,14 +690,6 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->is_default !== 0) {
-                return false;
-            }
-
-            if ($this->thelia_seller !== 0) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -568,20 +717,38 @@ abstract class MangopayWallet implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MangopayWalletTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MangopayWalletTableMap::translateFieldName('User', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->user = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('TransactionRef', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transaction_ref = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MangopayWalletTableMap::translateFieldName('Wallet', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->wallet = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('TransactionStatus', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transaction_status = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MangopayWalletTableMap::translateFieldName('IsDefault', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->is_default = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('EscrowWallet', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->escrow_wallet = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MangopayWalletTableMap::translateFieldName('TheliaSeller', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->thelia_seller = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('UserWallet', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_wallet = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('TransfertRef', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transfert_ref = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('TransfertStatus', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transfert_status = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : MangopayOrderTransfertTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -590,10 +757,10 @@ abstract class MangopayWallet implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = MangopayWalletTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = MangopayOrderTransfertTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating \PaymentMangopay\Model\MangopayWallet object", 0, $e);
+            throw new PropelException("Error populating \PaymentMangopay\Model\MangopayOrderTransfert object", 0, $e);
         }
     }
 
@@ -635,13 +802,13 @@ abstract class MangopayWallet implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MangopayWalletTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MangopayOrderTransfertTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildMangopayWalletQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildMangopayOrderTransfertQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -660,8 +827,8 @@ abstract class MangopayWallet implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see MangopayWallet::setDeleted()
-     * @see MangopayWallet::isDeleted()
+     * @see MangopayOrderTransfert::setDeleted()
+     * @see MangopayOrderTransfert::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -670,12 +837,12 @@ abstract class MangopayWallet implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MangopayWalletTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MangopayOrderTransfertTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = ChildMangopayWalletQuery::create()
+            $deleteQuery = ChildMangopayOrderTransfertQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -712,7 +879,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MangopayWalletTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MangopayOrderTransfertTableMap::DATABASE_NAME);
         }
 
         $con->beginTransaction();
@@ -721,8 +888,19 @@ abstract class MangopayWallet implements ActiveRecordInterface
             $ret = $this->preSave($con);
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+                if (!$this->isColumnModified(MangopayOrderTransfertTableMap::CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(MangopayOrderTransfertTableMap::UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(MangopayOrderTransfertTableMap::UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -732,7 +910,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                MangopayWalletTableMap::addInstanceToPool($this);
+                MangopayOrderTransfertTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -793,30 +971,42 @@ abstract class MangopayWallet implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[MangopayWalletTableMap::ID] = true;
+        $this->modifiedColumns[MangopayOrderTransfertTableMap::ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MangopayWalletTableMap::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MangopayOrderTransfertTableMap::ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(MangopayWalletTableMap::ID)) {
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::ID)) {
             $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(MangopayWalletTableMap::USER)) {
-            $modifiedColumns[':p' . $index++]  = 'USER';
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSACTION_REF)) {
+            $modifiedColumns[':p' . $index++]  = 'TRANSACTION_REF';
         }
-        if ($this->isColumnModified(MangopayWalletTableMap::WALLET)) {
-            $modifiedColumns[':p' . $index++]  = 'WALLET';
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSACTION_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'TRANSACTION_STATUS';
         }
-        if ($this->isColumnModified(MangopayWalletTableMap::IS_DEFAULT)) {
-            $modifiedColumns[':p' . $index++]  = 'IS_DEFAULT';
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::ESCROW_WALLET)) {
+            $modifiedColumns[':p' . $index++]  = 'ESCROW_WALLET';
         }
-        if ($this->isColumnModified(MangopayWalletTableMap::THELIA_SELLER)) {
-            $modifiedColumns[':p' . $index++]  = 'THELIA_SELLER';
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::USER_WALLET)) {
+            $modifiedColumns[':p' . $index++]  = 'USER_WALLET';
+        }
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSFERT_REF)) {
+            $modifiedColumns[':p' . $index++]  = 'TRANSFERT_REF';
+        }
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSFERT_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'TRANSFERT_STATUS';
+        }
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        }
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
         }
 
         $sql = sprintf(
-            'INSERT INTO mangopay_wallet (%s) VALUES (%s)',
+            'INSERT INTO mangopay_order_transfert (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -828,17 +1018,29 @@ abstract class MangopayWallet implements ActiveRecordInterface
                     case 'ID':                        
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'USER':                        
-                        $stmt->bindValue($identifier, $this->user, PDO::PARAM_INT);
+                    case 'TRANSACTION_REF':                        
+                        $stmt->bindValue($identifier, $this->transaction_ref, PDO::PARAM_STR);
                         break;
-                    case 'WALLET':                        
-                        $stmt->bindValue($identifier, $this->wallet, PDO::PARAM_INT);
+                    case 'TRANSACTION_STATUS':                        
+                        $stmt->bindValue($identifier, $this->transaction_status, PDO::PARAM_STR);
                         break;
-                    case 'IS_DEFAULT':                        
-                        $stmt->bindValue($identifier, $this->is_default, PDO::PARAM_INT);
+                    case 'ESCROW_WALLET':                        
+                        $stmt->bindValue($identifier, $this->escrow_wallet, PDO::PARAM_INT);
                         break;
-                    case 'THELIA_SELLER':                        
-                        $stmt->bindValue($identifier, $this->thelia_seller, PDO::PARAM_INT);
+                    case 'USER_WALLET':                        
+                        $stmt->bindValue($identifier, $this->user_wallet, PDO::PARAM_INT);
+                        break;
+                    case 'TRANSFERT_REF':                        
+                        $stmt->bindValue($identifier, $this->transfert_ref, PDO::PARAM_INT);
+                        break;
+                    case 'TRANSFERT_STATUS':                        
+                        $stmt->bindValue($identifier, $this->transfert_status, PDO::PARAM_STR);
+                        break;
+                    case 'CREATED_AT':                        
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'UPDATED_AT':                        
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -886,7 +1088,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MangopayWalletTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MangopayOrderTransfertTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -906,16 +1108,28 @@ abstract class MangopayWallet implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUser();
+                return $this->getTransactionRef();
                 break;
             case 2:
-                return $this->getWallet();
+                return $this->getTransactionStatus();
                 break;
             case 3:
-                return $this->getIsDefault();
+                return $this->getEscrowWallet();
                 break;
             case 4:
-                return $this->getTheliaSeller();
+                return $this->getUserWallet();
+                break;
+            case 5:
+                return $this->getTransfertRef();
+                break;
+            case 6:
+                return $this->getTransfertStatus();
+                break;
+            case 7:
+                return $this->getCreatedAt();
+                break;
+            case 8:
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -939,17 +1153,21 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
-        if (isset($alreadyDumpedObjects['MangopayWallet'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['MangopayOrderTransfert'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['MangopayWallet'][$this->getPrimaryKey()] = true;
-        $keys = MangopayWalletTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['MangopayOrderTransfert'][$this->getPrimaryKey()] = true;
+        $keys = MangopayOrderTransfertTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUser(),
-            $keys[2] => $this->getWallet(),
-            $keys[3] => $this->getIsDefault(),
-            $keys[4] => $this->getTheliaSeller(),
+            $keys[1] => $this->getTransactionRef(),
+            $keys[2] => $this->getTransactionStatus(),
+            $keys[3] => $this->getEscrowWallet(),
+            $keys[4] => $this->getUserWallet(),
+            $keys[5] => $this->getTransfertRef(),
+            $keys[6] => $this->getTransfertStatus(),
+            $keys[7] => $this->getCreatedAt(),
+            $keys[8] => $this->getUpdatedAt(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -973,7 +1191,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MangopayWalletTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MangopayOrderTransfertTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -993,16 +1211,28 @@ abstract class MangopayWallet implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUser($value);
+                $this->setTransactionRef($value);
                 break;
             case 2:
-                $this->setWallet($value);
+                $this->setTransactionStatus($value);
                 break;
             case 3:
-                $this->setIsDefault($value);
+                $this->setEscrowWallet($value);
                 break;
             case 4:
-                $this->setTheliaSeller($value);
+                $this->setUserWallet($value);
+                break;
+            case 5:
+                $this->setTransfertRef($value);
+                break;
+            case 6:
+                $this->setTransfertStatus($value);
+                break;
+            case 7:
+                $this->setCreatedAt($value);
+                break;
+            case 8:
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
     }
@@ -1026,13 +1256,17 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = MangopayWalletTableMap::getFieldNames($keyType);
+        $keys = MangopayOrderTransfertTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setUser($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setWallet($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setIsDefault($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setTheliaSeller($arr[$keys[4]]);
+        if (array_key_exists($keys[1], $arr)) $this->setTransactionRef($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setTransactionStatus($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setEscrowWallet($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setUserWallet($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setTransfertRef($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setTransfertStatus($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
     }
 
     /**
@@ -1042,13 +1276,17 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(MangopayWalletTableMap::DATABASE_NAME);
+        $criteria = new Criteria(MangopayOrderTransfertTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(MangopayWalletTableMap::ID)) $criteria->add(MangopayWalletTableMap::ID, $this->id);
-        if ($this->isColumnModified(MangopayWalletTableMap::USER)) $criteria->add(MangopayWalletTableMap::USER, $this->user);
-        if ($this->isColumnModified(MangopayWalletTableMap::WALLET)) $criteria->add(MangopayWalletTableMap::WALLET, $this->wallet);
-        if ($this->isColumnModified(MangopayWalletTableMap::IS_DEFAULT)) $criteria->add(MangopayWalletTableMap::IS_DEFAULT, $this->is_default);
-        if ($this->isColumnModified(MangopayWalletTableMap::THELIA_SELLER)) $criteria->add(MangopayWalletTableMap::THELIA_SELLER, $this->thelia_seller);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::ID)) $criteria->add(MangopayOrderTransfertTableMap::ID, $this->id);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSACTION_REF)) $criteria->add(MangopayOrderTransfertTableMap::TRANSACTION_REF, $this->transaction_ref);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSACTION_STATUS)) $criteria->add(MangopayOrderTransfertTableMap::TRANSACTION_STATUS, $this->transaction_status);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::ESCROW_WALLET)) $criteria->add(MangopayOrderTransfertTableMap::ESCROW_WALLET, $this->escrow_wallet);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::USER_WALLET)) $criteria->add(MangopayOrderTransfertTableMap::USER_WALLET, $this->user_wallet);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSFERT_REF)) $criteria->add(MangopayOrderTransfertTableMap::TRANSFERT_REF, $this->transfert_ref);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::TRANSFERT_STATUS)) $criteria->add(MangopayOrderTransfertTableMap::TRANSFERT_STATUS, $this->transfert_status);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::CREATED_AT)) $criteria->add(MangopayOrderTransfertTableMap::CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(MangopayOrderTransfertTableMap::UPDATED_AT)) $criteria->add(MangopayOrderTransfertTableMap::UPDATED_AT, $this->updated_at);
 
         return $criteria;
     }
@@ -1063,8 +1301,8 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(MangopayWalletTableMap::DATABASE_NAME);
-        $criteria->add(MangopayWalletTableMap::ID, $this->id);
+        $criteria = new Criteria(MangopayOrderTransfertTableMap::DATABASE_NAME);
+        $criteria->add(MangopayOrderTransfertTableMap::ID, $this->id);
 
         return $criteria;
     }
@@ -1105,17 +1343,21 @@ abstract class MangopayWallet implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \PaymentMangopay\Model\MangopayWallet (or compatible) type.
+     * @param      object $copyObj An object of \PaymentMangopay\Model\MangopayOrderTransfert (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUser($this->getUser());
-        $copyObj->setWallet($this->getWallet());
-        $copyObj->setIsDefault($this->getIsDefault());
-        $copyObj->setTheliaSeller($this->getTheliaSeller());
+        $copyObj->setTransactionRef($this->getTransactionRef());
+        $copyObj->setTransactionStatus($this->getTransactionStatus());
+        $copyObj->setEscrowWallet($this->getEscrowWallet());
+        $copyObj->setUserWallet($this->getUserWallet());
+        $copyObj->setTransfertRef($this->getTransfertRef());
+        $copyObj->setTransfertStatus($this->getTransfertStatus());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1131,7 +1373,7 @@ abstract class MangopayWallet implements ActiveRecordInterface
      * objects.
      *
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \PaymentMangopay\Model\MangopayWallet Clone of current object.
+     * @return                 \PaymentMangopay\Model\MangopayOrderTransfert Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1150,13 +1392,16 @@ abstract class MangopayWallet implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->user = null;
-        $this->wallet = null;
-        $this->is_default = null;
-        $this->thelia_seller = null;
+        $this->transaction_ref = null;
+        $this->transaction_status = null;
+        $this->escrow_wallet = null;
+        $this->user_wallet = null;
+        $this->transfert_ref = null;
+        $this->transfert_status = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1185,7 +1430,21 @@ abstract class MangopayWallet implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(MangopayWalletTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(MangopayOrderTransfertTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+    
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     ChildMangopayOrderTransfert The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[MangopayOrderTransfertTableMap::UPDATED_AT] = true;
+    
+        return $this;
     }
 
     /**

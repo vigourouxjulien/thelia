@@ -56,8 +56,30 @@ CREATE TABLE `mangopay_wallet`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `user` INTEGER NOT NULL,
     `wallet` INTEGER NOT NULL,
+    `is_default` INTEGER DEFAULT 0,
     `thelia_seller` INTEGER DEFAULT 0,
     PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- mangopay_order_transfert
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `mangopay_order_transfert`;
+
+CREATE TABLE `mangopay_order_transfert`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `transaction_ref` VARCHAR(100) NOT NULL,
+    `transaction_status` VARCHAR(255) NOT NULL,
+    `escrow_wallet` INTEGER NOT NULL,
+    `user_wallet` INTEGER NOT NULL,
+    `transfert_ref` INTEGER NOT NULL,
+    `transfert_status` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`),
+    INDEX `idx_order_transfert` (`transaction_ref`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier

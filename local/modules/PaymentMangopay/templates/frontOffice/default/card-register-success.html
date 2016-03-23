@@ -30,7 +30,24 @@
                     <h3 class="panel-title">{intl l="You choose"} : <span class="payment-method label label-primary">Mangopay</span></h3>
                 </div>
                 <div class="panel-body">
+                    {*
+                    {$authnumber} => numéro de préauthorization
+                    *}
+                    <ul>
+                    {loop type="preauthorizationdetailloop" name="preauthorizationdetailloop" id=$authnumber}
+                        {*
+                        Deux cas possible STATUS = FAILED ou STATUS = CREATED
+                        *}
 
+                        <li>AMOUNT : {$AMOUNT}</li>
+                        <li>CURRENCY : {$CURRENCY}</li>
+                        <li>CARDID : {$CARDID}</li>
+                        <li>ID : {$ID}</li>
+                        <li>STATUS : {$STATUS}</li>
+                        <li>PAYMENTSTATUS : {$PAYMENTSTATUS}</li>
+                        <li>PAYINID : {$PAYINID}</li>
+                    {/loop}
+                    </ul>
                     <p>Merci, paiement différé dans 15j</p>
                     <p>Votre numéro d'authorisation en cas de problème : {$authnumber}</p>
 

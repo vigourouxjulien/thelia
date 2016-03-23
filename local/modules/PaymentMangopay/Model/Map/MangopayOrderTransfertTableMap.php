@@ -2,8 +2,8 @@
 
 namespace PaymentMangopay\Model\Map;
 
-use PaymentMangopay\Model\MangopayWallet;
-use PaymentMangopay\Model\MangopayWalletQuery;
+use PaymentMangopay\Model\MangopayOrderTransfert;
+use PaymentMangopay\Model\MangopayOrderTransfertQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'mangopay_wallet' table.
+ * This class defines the structure of the 'mangopay_order_transfert' table.
  *
  *
  *
@@ -26,14 +26,14 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class MangopayWalletTableMap extends TableMap
+class MangopayOrderTransfertTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'PaymentMangopay.Model.Map.MangopayWalletTableMap';
+    const CLASS_NAME = 'PaymentMangopay.Model.Map.MangopayOrderTransfertTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class MangopayWalletTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'mangopay_wallet';
+    const TABLE_NAME = 'mangopay_order_transfert';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\PaymentMangopay\\Model\\MangopayWallet';
+    const OM_CLASS = '\\PaymentMangopay\\Model\\MangopayOrderTransfert';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'PaymentMangopay.Model.MangopayWallet';
+    const CLASS_DEFAULT = 'PaymentMangopay.Model.MangopayOrderTransfert';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -68,32 +68,52 @@ class MangopayWalletTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /**
      * the column name for the ID field
      */
-    const ID = 'mangopay_wallet.ID';
+    const ID = 'mangopay_order_transfert.ID';
 
     /**
-     * the column name for the USER field
+     * the column name for the TRANSACTION_REF field
      */
-    const USER = 'mangopay_wallet.USER';
+    const TRANSACTION_REF = 'mangopay_order_transfert.TRANSACTION_REF';
 
     /**
-     * the column name for the WALLET field
+     * the column name for the TRANSACTION_STATUS field
      */
-    const WALLET = 'mangopay_wallet.WALLET';
+    const TRANSACTION_STATUS = 'mangopay_order_transfert.TRANSACTION_STATUS';
 
     /**
-     * the column name for the IS_DEFAULT field
+     * the column name for the ESCROW_WALLET field
      */
-    const IS_DEFAULT = 'mangopay_wallet.IS_DEFAULT';
+    const ESCROW_WALLET = 'mangopay_order_transfert.ESCROW_WALLET';
 
     /**
-     * the column name for the THELIA_SELLER field
+     * the column name for the USER_WALLET field
      */
-    const THELIA_SELLER = 'mangopay_wallet.THELIA_SELLER';
+    const USER_WALLET = 'mangopay_order_transfert.USER_WALLET';
+
+    /**
+     * the column name for the TRANSFERT_REF field
+     */
+    const TRANSFERT_REF = 'mangopay_order_transfert.TRANSFERT_REF';
+
+    /**
+     * the column name for the TRANSFERT_STATUS field
+     */
+    const TRANSFERT_STATUS = 'mangopay_order_transfert.TRANSFERT_STATUS';
+
+    /**
+     * the column name for the CREATED_AT field
+     */
+    const CREATED_AT = 'mangopay_order_transfert.CREATED_AT';
+
+    /**
+     * the column name for the UPDATED_AT field
+     */
+    const UPDATED_AT = 'mangopay_order_transfert.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
@@ -107,12 +127,12 @@ class MangopayWalletTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'User', 'Wallet', 'IsDefault', 'TheliaSeller', ),
-        self::TYPE_STUDLYPHPNAME => array('id', 'user', 'wallet', 'isDefault', 'theliaSeller', ),
-        self::TYPE_COLNAME       => array(MangopayWalletTableMap::ID, MangopayWalletTableMap::USER, MangopayWalletTableMap::WALLET, MangopayWalletTableMap::IS_DEFAULT, MangopayWalletTableMap::THELIA_SELLER, ),
-        self::TYPE_RAW_COLNAME   => array('ID', 'USER', 'WALLET', 'IS_DEFAULT', 'THELIA_SELLER', ),
-        self::TYPE_FIELDNAME     => array('id', 'user', 'wallet', 'is_default', 'thelia_seller', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'TransactionRef', 'TransactionStatus', 'EscrowWallet', 'UserWallet', 'TransfertRef', 'TransfertStatus', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_STUDLYPHPNAME => array('id', 'transactionRef', 'transactionStatus', 'escrowWallet', 'userWallet', 'transfertRef', 'transfertStatus', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(MangopayOrderTransfertTableMap::ID, MangopayOrderTransfertTableMap::TRANSACTION_REF, MangopayOrderTransfertTableMap::TRANSACTION_STATUS, MangopayOrderTransfertTableMap::ESCROW_WALLET, MangopayOrderTransfertTableMap::USER_WALLET, MangopayOrderTransfertTableMap::TRANSFERT_REF, MangopayOrderTransfertTableMap::TRANSFERT_STATUS, MangopayOrderTransfertTableMap::CREATED_AT, MangopayOrderTransfertTableMap::UPDATED_AT, ),
+        self::TYPE_RAW_COLNAME   => array('ID', 'TRANSACTION_REF', 'TRANSACTION_STATUS', 'ESCROW_WALLET', 'USER_WALLET', 'TRANSFERT_REF', 'TRANSFERT_STATUS', 'CREATED_AT', 'UPDATED_AT', ),
+        self::TYPE_FIELDNAME     => array('id', 'transaction_ref', 'transaction_status', 'escrow_wallet', 'user_wallet', 'transfert_ref', 'transfert_status', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -122,12 +142,12 @@ class MangopayWalletTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'User' => 1, 'Wallet' => 2, 'IsDefault' => 3, 'TheliaSeller' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'user' => 1, 'wallet' => 2, 'isDefault' => 3, 'theliaSeller' => 4, ),
-        self::TYPE_COLNAME       => array(MangopayWalletTableMap::ID => 0, MangopayWalletTableMap::USER => 1, MangopayWalletTableMap::WALLET => 2, MangopayWalletTableMap::IS_DEFAULT => 3, MangopayWalletTableMap::THELIA_SELLER => 4, ),
-        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'USER' => 1, 'WALLET' => 2, 'IS_DEFAULT' => 3, 'THELIA_SELLER' => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'user' => 1, 'wallet' => 2, 'is_default' => 3, 'thelia_seller' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TransactionRef' => 1, 'TransactionStatus' => 2, 'EscrowWallet' => 3, 'UserWallet' => 4, 'TransfertRef' => 5, 'TransfertStatus' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
+        self::TYPE_STUDLYPHPNAME => array('id' => 0, 'transactionRef' => 1, 'transactionStatus' => 2, 'escrowWallet' => 3, 'userWallet' => 4, 'transfertRef' => 5, 'transfertStatus' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
+        self::TYPE_COLNAME       => array(MangopayOrderTransfertTableMap::ID => 0, MangopayOrderTransfertTableMap::TRANSACTION_REF => 1, MangopayOrderTransfertTableMap::TRANSACTION_STATUS => 2, MangopayOrderTransfertTableMap::ESCROW_WALLET => 3, MangopayOrderTransfertTableMap::USER_WALLET => 4, MangopayOrderTransfertTableMap::TRANSFERT_REF => 5, MangopayOrderTransfertTableMap::TRANSFERT_STATUS => 6, MangopayOrderTransfertTableMap::CREATED_AT => 7, MangopayOrderTransfertTableMap::UPDATED_AT => 8, ),
+        self::TYPE_RAW_COLNAME   => array('ID' => 0, 'TRANSACTION_REF' => 1, 'TRANSACTION_STATUS' => 2, 'ESCROW_WALLET' => 3, 'USER_WALLET' => 4, 'TRANSFERT_REF' => 5, 'TRANSFERT_STATUS' => 6, 'CREATED_AT' => 7, 'UPDATED_AT' => 8, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'transaction_ref' => 1, 'transaction_status' => 2, 'escrow_wallet' => 3, 'user_wallet' => 4, 'transfert_ref' => 5, 'transfert_status' => 6, 'created_at' => 7, 'updated_at' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -140,17 +160,21 @@ class MangopayWalletTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('mangopay_wallet');
-        $this->setPhpName('MangopayWallet');
-        $this->setClassName('\\PaymentMangopay\\Model\\MangopayWallet');
+        $this->setName('mangopay_order_transfert');
+        $this->setPhpName('MangopayOrderTransfert');
+        $this->setClassName('\\PaymentMangopay\\Model\\MangopayOrderTransfert');
         $this->setPackage('PaymentMangopay.Model');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('USER', 'User', 'INTEGER', true, null, null);
-        $this->addColumn('WALLET', 'Wallet', 'INTEGER', true, null, null);
-        $this->addColumn('IS_DEFAULT', 'IsDefault', 'INTEGER', false, null, 0);
-        $this->addColumn('THELIA_SELLER', 'TheliaSeller', 'INTEGER', false, null, 0);
+        $this->addColumn('TRANSACTION_REF', 'TransactionRef', 'VARCHAR', true, 100, null);
+        $this->addColumn('TRANSACTION_STATUS', 'TransactionStatus', 'VARCHAR', true, 255, null);
+        $this->addColumn('ESCROW_WALLET', 'EscrowWallet', 'INTEGER', true, null, null);
+        $this->addColumn('USER_WALLET', 'UserWallet', 'INTEGER', true, null, null);
+        $this->addColumn('TRANSFERT_REF', 'TransfertRef', 'INTEGER', true, null, null);
+        $this->addColumn('TRANSFERT_STATUS', 'TransfertStatus', 'VARCHAR', true, 255, null);
+        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -159,6 +183,19 @@ class MangopayWalletTableMap extends TableMap
     public function buildRelations()
     {
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -216,7 +253,7 @@ class MangopayWalletTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? MangopayWalletTableMap::CLASS_DEFAULT : MangopayWalletTableMap::OM_CLASS;
+        return $withPrefix ? MangopayOrderTransfertTableMap::CLASS_DEFAULT : MangopayOrderTransfertTableMap::OM_CLASS;
     }
 
     /**
@@ -230,21 +267,21 @@ class MangopayWalletTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *         rethrown wrapped into a PropelException.
-     * @return array (MangopayWallet object, last column rank)
+     * @return array (MangopayOrderTransfert object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = MangopayWalletTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = MangopayWalletTableMap::getInstanceFromPool($key))) {
+        $key = MangopayOrderTransfertTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = MangopayOrderTransfertTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + MangopayWalletTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + MangopayOrderTransfertTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = MangopayWalletTableMap::OM_CLASS;
+            $cls = MangopayOrderTransfertTableMap::OM_CLASS;
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            MangopayWalletTableMap::addInstanceToPool($obj, $key);
+            MangopayOrderTransfertTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -267,8 +304,8 @@ class MangopayWalletTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = MangopayWalletTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = MangopayWalletTableMap::getInstanceFromPool($key))) {
+            $key = MangopayOrderTransfertTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = MangopayOrderTransfertTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
@@ -277,7 +314,7 @@ class MangopayWalletTableMap extends TableMap
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                MangopayWalletTableMap::addInstanceToPool($obj, $key);
+                MangopayOrderTransfertTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -298,17 +335,25 @@ class MangopayWalletTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(MangopayWalletTableMap::ID);
-            $criteria->addSelectColumn(MangopayWalletTableMap::USER);
-            $criteria->addSelectColumn(MangopayWalletTableMap::WALLET);
-            $criteria->addSelectColumn(MangopayWalletTableMap::IS_DEFAULT);
-            $criteria->addSelectColumn(MangopayWalletTableMap::THELIA_SELLER);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::ID);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::TRANSACTION_REF);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::TRANSACTION_STATUS);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::ESCROW_WALLET);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::USER_WALLET);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::TRANSFERT_REF);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::TRANSFERT_STATUS);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::CREATED_AT);
+            $criteria->addSelectColumn(MangopayOrderTransfertTableMap::UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.ID');
-            $criteria->addSelectColumn($alias . '.USER');
-            $criteria->addSelectColumn($alias . '.WALLET');
-            $criteria->addSelectColumn($alias . '.IS_DEFAULT');
-            $criteria->addSelectColumn($alias . '.THELIA_SELLER');
+            $criteria->addSelectColumn($alias . '.TRANSACTION_REF');
+            $criteria->addSelectColumn($alias . '.TRANSACTION_STATUS');
+            $criteria->addSelectColumn($alias . '.ESCROW_WALLET');
+            $criteria->addSelectColumn($alias . '.USER_WALLET');
+            $criteria->addSelectColumn($alias . '.TRANSFERT_REF');
+            $criteria->addSelectColumn($alias . '.TRANSFERT_STATUS');
+            $criteria->addSelectColumn($alias . '.CREATED_AT');
+            $criteria->addSelectColumn($alias . '.UPDATED_AT');
         }
     }
 
@@ -321,7 +366,7 @@ class MangopayWalletTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(MangopayWalletTableMap::DATABASE_NAME)->getTable(MangopayWalletTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(MangopayOrderTransfertTableMap::DATABASE_NAME)->getTable(MangopayOrderTransfertTableMap::TABLE_NAME);
     }
 
     /**
@@ -329,16 +374,16 @@ class MangopayWalletTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MangopayWalletTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(MangopayWalletTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new MangopayWalletTableMap());
+      $dbMap = Propel::getServiceContainer()->getDatabaseMap(MangopayOrderTransfertTableMap::DATABASE_NAME);
+      if (!$dbMap->hasTable(MangopayOrderTransfertTableMap::TABLE_NAME)) {
+        $dbMap->addTableObject(new MangopayOrderTransfertTableMap());
       }
     }
 
     /**
-     * Performs a DELETE on the database, given a MangopayWallet or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a MangopayOrderTransfert or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or MangopayWallet object or primary key or array of primary keys
+     * @param mixed               $values Criteria or MangopayOrderTransfert object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -349,25 +394,25 @@ class MangopayWalletTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MangopayWalletTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MangopayOrderTransfertTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \PaymentMangopay\Model\MangopayWallet) { // it's a model object
+        } elseif ($values instanceof \PaymentMangopay\Model\MangopayOrderTransfert) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(MangopayWalletTableMap::DATABASE_NAME);
-            $criteria->add(MangopayWalletTableMap::ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(MangopayOrderTransfertTableMap::DATABASE_NAME);
+            $criteria->add(MangopayOrderTransfertTableMap::ID, (array) $values, Criteria::IN);
         }
 
-        $query = MangopayWalletQuery::create()->mergeWith($criteria);
+        $query = MangopayOrderTransfertQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { MangopayWalletTableMap::clearInstancePool();
+        if ($values instanceof Criteria) { MangopayOrderTransfertTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { MangopayWalletTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) { MangopayOrderTransfertTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -375,20 +420,20 @@ class MangopayWalletTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the mangopay_wallet table.
+     * Deletes all rows from the mangopay_order_transfert table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return MangopayWalletQuery::create()->doDeleteAll($con);
+        return MangopayOrderTransfertQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a MangopayWallet or Criteria object.
+     * Performs an INSERT on the database, given a MangopayOrderTransfert or Criteria object.
      *
-     * @param mixed               $criteria Criteria or MangopayWallet object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or MangopayOrderTransfert object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -397,22 +442,22 @@ class MangopayWalletTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MangopayWalletTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MangopayOrderTransfertTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from MangopayWallet object
+            $criteria = $criteria->buildCriteria(); // build Criteria from MangopayOrderTransfert object
         }
 
-        if ($criteria->containsKey(MangopayWalletTableMap::ID) && $criteria->keyContainsValue(MangopayWalletTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.MangopayWalletTableMap::ID.')');
+        if ($criteria->containsKey(MangopayOrderTransfertTableMap::ID) && $criteria->keyContainsValue(MangopayOrderTransfertTableMap::ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.MangopayOrderTransfertTableMap::ID.')');
         }
 
 
         // Set the correct dbName
-        $query = MangopayWalletQuery::create()->mergeWith($criteria);
+        $query = MangopayOrderTransfertQuery::create()->mergeWith($criteria);
 
         try {
             // use transaction because $criteria could contain info
@@ -428,7 +473,7 @@ class MangopayWalletTableMap extends TableMap
         return $pk;
     }
 
-} // MangopayWalletTableMap
+} // MangopayOrderTransfertTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-MangopayWalletTableMap::buildTableMap();
+MangopayOrderTransfertTableMap::buildTableMap();

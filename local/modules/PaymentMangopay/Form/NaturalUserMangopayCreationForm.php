@@ -50,7 +50,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('email',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -63,7 +63,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('firstname',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -75,7 +75,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('lastname',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -86,7 +86,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('addressline1',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -110,7 +110,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('city',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(
                     new Length(array('max'=>255))
                 ),
@@ -134,7 +134,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('postalcode',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -144,7 +144,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                     "for" => "enabled",
                     "help" => Translator::getInstance()->trans('country',[],PaymentMangopay::BO_DOMAIN_NAME)
                 ],
-                "required" => false,
+                "required" => true,
                 "constraints" => array(),
                 "attr" => array()
             ))
@@ -156,7 +156,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('birthday',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -169,7 +169,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('nationality',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
@@ -182,7 +182,7 @@ class NaturalUserMangopayCreationForm  extends BaseForm
                         "for" => "enabled",
                         "help" => Translator::getInstance()->trans('countryofresidence',[],PaymentMangopay::BO_DOMAIN_NAME)
                     ],
-                    "required" => false,
+                    "required" => true,
                     "constraints" => array(),
                     "attr" => array()
                 )
