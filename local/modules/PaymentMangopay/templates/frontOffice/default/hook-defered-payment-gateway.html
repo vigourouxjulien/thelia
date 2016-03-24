@@ -1,0 +1,74 @@
+<form action="{$gateway_url nofilter}" method="post" class="form-horizontal">
+
+<div id="payment-success" class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{intl l="You choose to pay by"} : <span class="payment-method label label-primary">{loop name="payment-module" type="module" id=$PAYMENT_MODULE}{$TITLE}{/loop}</span></h3>
+    </div>
+
+    <div class="panel-body">
+        {if $cart_count > 0}
+            <div class="panel-heading clearfix">
+                {intl l="Connecting to the secure payment server, please wait a few seconds..."}
+            </div>
+
+            <div class="panel-body">
+
+                    {*
+                    <p><input type="text" name="data" value="{$data}" /></p>
+                    <p><input type="text" name="accessKeyRef" value="{$accessKeyRef}" /></p>
+                    *}
+                    {foreach from=$payment_form_data key='name' item='value'}
+                        <p>{$name} : <input type="text" name="{$name}" value="{$value}" /></p>
+                    {/foreach}
+
+                    {$order_id = $payment_form_data['order_id']}
+                    {$CardReg = $payment_form_data['CardReg']}
+                    {$user = $payment_form_data['user']}
+                    {$wallet = $payment_form_data['wallet']}
+                    {$amount = $payment_form_data['amount']}
+                    {$cardtype = $payment_form_data['cardtype']}
+
+                    <p><input
+                            type="text"
+                            name="returnURL"
+                            value="{url path="mangopay/$order_id/registercard" CardReg=$CardReg user=$user wallet=$wallet amount=$amount }"
+                        /></p>
+
+                    <div class="form-group">
+                        <label for="cardNumber" class="col-sm-2 control-label">{intl d="paymentmangopay.bo.default" l="Card number"} :</label>
+                        <div class="col-sm-4">
+                            <input id="cardNumber" required="required" class="form-control" type="text" name="cardNumber" size="20" maxlength="30" value="3569990000000157">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardExpirationDate" class="col-sm-2 control-label">{intl d="paymentmangopay.bo.default" l="Expiry date"} :</label>
+                        <div class="col-sm-4">
+                            <input id="cardExpirationDate" required="required" class="form-control" type="text" name="cardExpirationDate" maxlength="4" size="4" placeholder="MMYY" value="1217">
+                        </div>
+                    </div>
+
+                    {*
+                    For MAESTRO cardtype, the cardCvx field isn't required
+                    *}
+                    {if $cardtype ne 'MAESTRO'}
+                        <div class="form-group">
+                            <label for="cardCvx" class="col-sm-2 control-label">{intl d="paymentmangopay.bo.default" l="CVV"} :</label>
+                            <div class="col-sm-4">
+                                <input id="cardCvx" required="required" class="form-control" type="text" name="cardCvx" size="3" maxlength="5" value="123">
+                            </div>
+                        </div>
+                    {else}
+                        <input id="cardCvx" class="form-control" type="hidden" name="cardCvx" size="3" maxlength="5" value="">
+                    {/if}
+
+
+            </div>
+        {else}
+            {intl l="Sorry, your cart is empty. There's nothing to pay."}
+        {/if}
+    </div>
+</div>
+
+<a href="{url path="/order/invoice"}" role="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> {intl l="Back"}</a>
+<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-chevron-right"></i> {intl l="Next Step"}</button>
+</form>

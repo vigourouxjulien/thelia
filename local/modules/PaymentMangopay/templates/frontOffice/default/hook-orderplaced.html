@@ -1,0 +1,15 @@
+{loop type="preauthorizationdetailloop" name="preauthorizationdetailloop" id=$authnumber}
+    {if $STATUS eq 'CREATED'}
+        <div class="alert alert-info" role="alert">
+            {loop type="mangopayconfigloop" name="mangopayconfigloop"}
+                <p>{intl d='paymentmangopay.fo.default' l="Your payment will be deferred within <b>%day</b> days" day={$DAYS}}</p>
+            {/loop}
+            <p>{intl d='paymentmangopay.fo.default' l="Thank you to write down your transaction number"} : <b>{$authnumber}</b></p>
+        </div>
+    {else}
+        <div class="alert alert-danger" role="alert">
+            <p>{intl d='paymentmangopay.fo.default' l="We detect an error in the payment"}</p>
+            <p>{intl d='paymentmangopay.fo.default' l="Thank you to contact us with your transaction number"} : <b>{$authnumber}</b></p>
+        </div>
+    {/if}
+{/loop}

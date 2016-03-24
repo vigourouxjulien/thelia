@@ -1,3 +1,4 @@
+{if $mode eq 'direct'}
 <ul>
     <li><input type="radio" name="CardType" value="CB_VISA_MASTERCARD" checked="checked">CB_VISA_MASTERCARD</input></li>
     <li><input type="radio" name="CardType" value="MAESTRO">MAESTRO</input></li>
@@ -7,3 +8,10 @@
     <li><input type="radio" name="CardType" value="BCMC">BCMC</input></li>
     <li><input type="radio" name="CardType" value="MASTERPASS">MASTERPASS</input></li>
 </ul>
+{else}
+<ul>
+    <li><input type="radio" name="CardType" value="CB_VISA_MASTERCARD" checked="checked">CB_VISA_MASTERCARD</input></li>
+    <li><input type="radio" name="CardType" value="MAESTRO">MAESTRO</input></li>
+    <li><input type="radio" name="CardType" value="DINERS">DINERS</input></li>
+</ul>
+{/if}

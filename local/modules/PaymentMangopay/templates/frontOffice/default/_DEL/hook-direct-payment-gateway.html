@@ -1,0 +1,35 @@
+<div id="payment-success" class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{intl l="You choose to pay by"} : <span class="payment-method label label-primary">{loop name="payment-module" type="module" id=$PAYMENT_MODULE}{$TITLE}{/loop}</span></h3>
+    </div>
+
+    <div class="panel-body">
+        {if $cart_count > 0}
+            <div class="panel-heading clearfix">
+                {intl l="Connecting to the secure payment server, please wait a few seconds..."}
+            </div>
+
+            <div class="panel-body">
+                <form action="{$gateway_url nofilter}" method="post" id="payement_gateway_form">
+                    {foreach from=$payment_form_data key='name' item='value'}
+                        <input type="hidden" name="{$name}" value="{$value}" />
+                    {/foreach}
+
+                    <ul>
+                        <li><button type="submit" name="CardType" value="CB_VISA_MASTERCARD">CB_VISA_MASTERCARD</button></li>
+                        <li><button type="submit" name="CardType" value="MAESTRO">MAESTRO</button></li>
+                        <li><button type="submit" name="CardType" value="DINERS">DINERS</button></li>
+                        <li><button type="submit" name="CardType" value="P24">P24</button></li>
+                        <li><button type="submit" name="CardType" value="IDEAL">IDEAL</button></li>
+                        <li><button type="submit" name="CardType" value="BCMC">BCMC</button></li>
+                        <li><button type="submit" name="CardType" value="MASTERPASS">MASTERPASS</button></li>
+                    </ul>
+
+                    <p>{intl l='If nothing happens within 10 seconds, <a id="force-submit-payment-form" href="#">please click here</a>.'}</p>
+                </form>
+            </div>
+        {else}
+            {intl l="Sorry, your cart is empty. There's nothing to pay."}
+        {/if}
+    </div>
+</div>

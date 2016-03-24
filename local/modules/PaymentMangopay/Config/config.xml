@@ -8,6 +8,8 @@
         <!-- sample definition
         <loop name="MySuperLoop" class="PaymentMangopay\Loop\MySuperLoop" />
         -->
+
+        <loop name="mangopayconfigloop" class="PaymentMangopay\Loop\MangopayConfigLoop" />
         <loop name="escrowwalletloop" class="PaymentMangopay\Loop\EscrowWalletLoop" />
         <loop name="paymentmangopayapiloop" class="PaymentMangopay\Loop\PaymentMangopayApiLoop" />
 
@@ -63,6 +65,16 @@
         <hook id="paymentmangopay.hook" class="PaymentMangopay\Hook\PaymentMangopayHook">
             <tag name="hook.event_listener" event="order-invoice.payment-extra" type="front" method="onOrderInvoicePaymentExtra" />
         </hook>
+        <hook id="paymentmangopay.orderplaced" class="PaymentMangopay\Hook\PaymentMangopayHook">
+            <tag name="hook.event_listener" event="order-placed.additional-payment-info" type="front" method="onOrderPlacedAdditionalPaymentInfo" />
+        </hook>
+        <hook id="paymentmangopay.deferredgateway" class="PaymentMangopay\Hook\PaymentMangopayHook">
+            <tag name="hook.event_listener" event="order-payment-gateway.body" type="front" method="onOrderPaymentGatewayBody" />
+        </hook>
+        <hook id="paymentmangopay.deferredgatewayjs" class="PaymentMangopay\Hook\PaymentMangopayHook">
+            <tag name="hook.event_listener" event="order-payment-gateway.javascript" type="front" method="onOrderPaymentGatewayJavascript" />
+        </hook>
+
     </hooks>
 
     <!--

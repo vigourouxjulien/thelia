@@ -46,6 +46,9 @@ use MangoPay\Libraries\Logs;
 use Thelia\Core\Template\ParserInterface;
 use Thelia\Core\Template\TemplateHelperInterface;
 
+/*
+ * TODO : Nétoyer le module, ajouter les logo pour les types de carte
+ */
 
 class PaymentMangopay extends AbstractPaymentModule
 {
@@ -227,6 +230,7 @@ class PaymentMangopay extends AbstractPaymentModule
 
     public function pay(Order $order)
     {
+
         if(PaymentMangopay::getDeferredPay() == 1){
             return $this->doDeferredPay($order);
         }
@@ -258,9 +262,9 @@ class PaymentMangopay extends AbstractPaymentModule
             $escrowUser = PaymentMangopay::getEscrowUser();
             $escrowWallet = PaymentMangopay::getEscrowWallet();
 
+            $session = new Session();
             //Récupératin du type de carte à utiliser
             //CB_VISA_MASTERCARD MAESTRO DINERS P24 IDEAL BCMC MASTERPASS
-            $session = new Session();
             $cardType = $session->get('selectedCardType',null);
 
             if(!$cardType){
@@ -268,7 +272,6 @@ class PaymentMangopay extends AbstractPaymentModule
             }
 
             //Récupération du langage courante
-            $session = new Session();
             $defaultLang = $session->getLang()->getCode();
 
             //Currency
@@ -317,6 +320,7 @@ class PaymentMangopay extends AbstractPaymentModule
     }
     public function doDeferredPay(Order $order)
     {
+
         try {
            //Get Amount in cents
             $Amount = $order->getTotalAmount() * 100;
@@ -333,14 +337,37 @@ class PaymentMangopay extends AbstractPaymentModule
 
             //Currency
             $currency = $order->getCurrency()->getCode();
+            //CB_VISA_MASTERCARD, MAESTRO, DINERS
+            $session = new Session();
+
+            $cardType = $session->get('selectedCardType',null);
+            Tlog::getInstance()->debug("selectedCardType ".$cardType);
+            if(!$cardType){
+                $cardType = 'CB_VISA_MASTERCARD';
+            }
 
             $cardRegister = new \MangoPay\CardRegistration();
             $cardRegister->UserId = $escrowUser;
             $cardRegister->Currency = $currency;
-            //CB_VISA_MASTERCARD, MAESTRO, DINERS
-            $cardRegister->CardType = "CB_VISA_MASTERCARD";
+            $cardRegister->CardType = $cardType;
+
+
             $result = $api->CardRegistrations->Create($cardRegister);
-            var_dump($result);
+
+            $html_params = array(
+                "order_id" => $order->getId(),
+                "data" => $result->PreregistrationData,
+                "accessKeyRef" => $result->AccessKey,
+                "CardReg" => $result->Id,
+                "user" => $escrowUser,
+                "wallet" => $escrowWallet,
+                "amount" => $Amount,
+                "cardtype" => $cardType
+            );
+            $gateway_url = "https://homologation-webpayment.payline.com/webpayment/getToken";
+
+            return $this->generateGatewayFormResponse($order, $gateway_url, $html_params);
+            /*
             $parser = $this->getContainer()->get("thelia.parser");
 
             $parser->setTemplateDefinition(
@@ -359,8 +386,8 @@ class PaymentMangopay extends AbstractPaymentModule
                     "amount" => $Amount
                 )
             );
-
             return Response::create($renderedTemplate);
+            */
 
         } catch (ResponseException $e) {
 

@@ -78,14 +78,14 @@ class SetCardType extends BaseAction implements EventSubscriberInterface
         if($cardType){
             $session = new Session();
             $session->set('selectedCardType',$cardType);
-            $session->save();
+            //$session->save();
         }
     }
 
     public static function getSubscribedEvents()
     {
         return array(
-            TheliaEvents::ORDER_SET_INVOICE_ADDRESS =>  array("set_card_type", 256),
+            TheliaEvents::ORDER_SET_INVOICE_ADDRESS =>  array("set_card_type", 128),
         );
     }
 }

@@ -40,14 +40,6 @@ class FrontController extends BaseFrontController
     }
     public function registerCard($order_id){
 
-        //127.0.0.1/mangopay/25/registercard?CardReg=11388216&user=11308050&wallet=11313564&amount=150
-        /*
-        CardReg
-        user
-        wallet
-        amount
-        */
-
         try {
             $CardReg = $this->getRequest()->get('CardReg');
             $user = $this->getRequest()->get('user');
@@ -60,9 +52,11 @@ class FrontController extends BaseFrontController
             $cardRegisterPut->RegistrationData = isset($_GET['data']) ? 'data=' . $_GET['data'] : 'errorCode=' . $_GET['errorCode'];
             $cardRegisterPut->RegistrationData = isset($data) ? 'data=' . $data : 'errorCode=' . $errorCode;
             $result = $api->CardRegistrations->Update($cardRegisterPut);
-            var_dump($cardRegisterPut);
-            var_dump($result);
-            //if($cardRegisterPut->Status === 'VALIDATED'){
+            //var_dump($cardRegisterPut);
+            //var_dump($result);
+
+            $order = OrderQuery::create()->findPk($order_id);
+
             if($result->Status === 'VALIDATED'){
 
                 $this->setCurrentRouter('router.paymentmangopay');
@@ -74,7 +68,6 @@ class FrontController extends BaseFrontController
                 );
 
                 //Currency
-                $order = OrderQuery::create()->findPk($order_id);
                 $currency = $order->getCurrency()->getCode();
 
                 $CardPreAuthorization = new \MangoPay\CardPreAuthorization();
@@ -89,8 +82,8 @@ class FrontController extends BaseFrontController
                 $CardPreAuthorization->SecureModeReturnURL = $SecureModeReturnURL;
 
                 $cardPreAuth = $api->CardPreAuthorizations->Create($CardPreAuthorization);
-                var_dump($cardPreAuth);
-                //if($cardPreAuth->PaymentStatus === 'WAITING' && $cardPreAuth->Status === 'SUCCEEDED'){
+
+                if($cardPreAuth->Status === 'CREATED'){
 
                     //Le paiement est autorisé et en attente
                     $preAuth = new OrderPreauthorisation();
@@ -104,12 +97,24 @@ class FrontController extends BaseFrontController
                     $order = OrderQuery::Create()->FindPk($order_id);
                     $event = new OrderEvent($order);
                     $this->getDispatcher()->dispatch(TheliaEvents::ORDER_CART_CLEAR, $event);
+                    $this->setCurrentRouter('router.front');
+                    //return $this->render('card-register-success',array('authnumber'=>$cardPreAuth->Id));
 
-                    return $this->render('card-register-success',array('authnumber'=>$cardPreAuth->Id));
-                //}
+                    return $this->generateRedirectFromRoute(
+                        "order.placed",
+                        array("authnumber"=>$cardPreAuth->Id),
+                        array("order_id" => $order_id)
+                    );
+
+                }
             }
-
-            return $this->render('card-register-fail');
+            $this->setCurrentRouter('router.front');
+            //return $this->render('card-register-fail');
+            return $this->generateRedirectFromRoute(
+                "order.failed",
+                array(),
+                array("order_id" => $order_id, "message" => "Erreur de paiement")
+            );
 
 
         } catch (ResponseException $e) {
@@ -124,6 +129,7 @@ class FrontController extends BaseFrontController
         }
 
     }
+
     /**
      * Method used when an payment is accepeted
      *
